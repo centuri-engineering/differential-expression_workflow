@@ -2,7 +2,9 @@
 B4| IBDM | Epithelial integrity controls the differentiation of hiPSCs into Primitive Streak by regulating TGF-b receptor accessibility
 
 Applicant: Rosanna Dono & Diane Rattier
+
 Institute: IBDM
+
 Engineer: Thomas Vannier
 
 ## Summary
