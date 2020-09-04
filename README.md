@@ -15,4 +15,4 @@ Human induced pluripotent stem cells (hiPSCs), considered as in vitro equivalent
 
 In order to understand whether the modification of the epithelium integrity, observed in shGPC4, primes hiPSCs for PS differentiation, we performed a bulk RNA-sequencing analysis of WT, shCTRL and shGPC4 hiPSCs (in triplicate each) at the undifferentiated stage. For this project, we need to analyze the raw data from this sequencing experiment. To this aim, the requested tasks are: 1) Clean the raw data, 2) Map the cleaned data on the human genome to obtain a list of expressed genes in each sample, 3) Compare the different samples to obtain a list of differentially expressed genes: WT/shCTRL, WT/shGPC4 and shCTRL/shGPC4.
 
-## Keywords: bulk RNA-sequencing, hiPSCs
+Keywords: bulk RNA-sequencing, hiPSCs
