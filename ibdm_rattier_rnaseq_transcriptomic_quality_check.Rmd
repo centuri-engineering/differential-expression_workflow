@@ -1,0 +1,94 @@
+---
+output:
+  html_document:
+    theme: cerulean
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+  word_document:
+    toc: yes
+    toc_depth: '4'
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
+---
+
+```{r setKnitrOptions, include=FALSE}
+  knitr::opts_chunk$set(results='asis', echo = FALSE, error = TRUE, cache = FALSE, cache.comments = TRUE, fig.dim = c(7,7), autodep = TRUE)
+```
+
+```{r loadParamsAndDependencies, warning=FALSE, message=FALSE}
+### Define working folder (contains R/Rmd file for current sample, parent contains global project files)
+WORKING_DIR   = getwd();
+
+### Load parameters
+# Define an environment that will contain parameters
+paramsEnv = new.env();
+
+# Load file defining global (project) parameters in 'paramsEnv'
+source( file.path( WORKING_DIR, "script", "01_globalParams.R"), local = paramsEnv);
+# Load file defining local parameters
+source( file.path( WORKING_DIR, "script", "02_localParams.R"), local = paramsEnv);
+
+# Assign loaded values to current environment (Not .GlobalEnv as it may not be the current one depending on where rendering is started from)
+invisible( lapply( ls( paramsEnv, all.names = TRUE), function(x, envir)
+  { 
+    assign( x = x, 
+            value = get( x, pos = paramsEnv), 
+            pos = envir)
+  },
+  environment()));
+
+### Load libraries, global functions/variables, and chunks
+# Load general Deps
+source( file.path( WORKING_DIR, "script", "00_generalDeps.R"));
+
+# Import chunks from source files
+read_chunk( path=file.path( WORKING_DIR,"script","transcriptomic_quality_check.R"));
+```
+
+---
+title: "Epithelial integrity controls competency of hiPSCs - Rnaseq transcriptomic quality check."
+---
+<br /><br />
+```{r initFunctions}
+
+### Create output directory
+#dir.create( PATH_OUTPUT, showWarnings = FALSE);
+### Create picture directory (manual caption to be done)
+#dir.create( PATH_PICTURE, showWarnings = FALSE);
+### Create picture directory (manual caption to be done)
+
+### Record starting time (for report and file names)
+startTime = Sys.time();
+startTimeReport   = format( startTime, "%Y %m %d %H:%M:%S");
+startTimeFileName = format( startTime, "%Y_%m_%d_%H_%M_%S");
+```
+
+## Environment informations {.tabset .tabset-fade}
+### Report generation date
+```{r runInfo_run}
+pander( c( 'Date'     = startTimeReport,
+           'Version'     = "Rnaseq_transcriptomic_quality_check"));
+```
+
+### R
+```{r runInfo_r}
+pander( sessionInfo())
+```
+
+### Working directory
+```{r}
+cat(WORKING_DIR)
+```
+
+<!-- Ending the tabset section -->
+### {.toc-ignore} 
+
+## Fast QC
+
+### Test
+
+```{r fast_qc, message=FALSE, warning=TRUE}
+<<fast_qc>>
+```
