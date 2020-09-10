@@ -1,7 +1,7 @@
 # Based on rocker - https://github.com/rocker-org/rocker-versioned
 FROM rocker/tidyverse:3.6.0
 
-MAINTAINER thomas (thomas.vannier@univ-amu.fr)
+MAINTAINER Thomas Vannier (thomas.vannier@univ-amu.fr)
 
 #############
 # ibdm_rattier_rnaseq
