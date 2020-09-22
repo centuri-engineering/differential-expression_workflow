@@ -1,0 +1,9 @@
+channels :
+- conda-forge
+- bioconda
+- main
+    
+dependencies :
+- python=3.7.6 # specify python version ( not required but can help with downstream conflicts )
+- snakemake-minimal=5.10.0 # workflow manager
+- pandas =0.23 # read and browse data frame
