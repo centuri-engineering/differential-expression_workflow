@@ -17,8 +17,10 @@ validate(samples, schema="06_Schemas/samples.schema.yaml")
 # ----------------------------------------------
 rule all:
   input:
-    expand( "05_Output/01_fastqc/{samples.project}_{samples.condition}_{samples.sample}_fastqc.html", samples=samples.itertuples()),
-    expand( "05_Output/01_fastqc/{samples.project}_{samples.condition}_{samples.sample}_fastqc.zip", samples=samples.itertuples())
+    expand( "{samples.project}_{samples.condition}_{samples.sample}_1.trimmed.fastq", samples=samples.itertuples()),
+    expand( "{samples.project}_{samples.condition}_{samples.sample}_2.trimmed.fastq", samples=samples.itertuples()),
+    expand( "{samples.project}_{samples.condition}_{samples.sample}_1un.trimmed.fastq", samples=samples.itertuples()),
+    expand( "{samples.project}_{samples.condition}_{samples.sample}_2un.trimmed.fastq", samples=samples.itertuples())
 
 # ----------------------------------------------
 # setup singularity 
@@ -32,23 +34,4 @@ singularity: "docker://continuumio/miniconda3"
 # Load rules 
 # ----------------------------------------------
 
-include: "04_Workflow/fastqc.smk"
-
-
-
-# ----------------------------------------------
-# FastQC to check the reads quality
-# ----------------------------------------------
-# rule fastqc:
-#   output:
-#     expand( "05_Output/01_fastqc/{sample}_fastqc.html", sample = SAMPLE_ID),
-#     expand( "05_Output/01_fastqc/{sample}_fastqc.zip", sample = SAMPLE_ID)
-
-#   input:
-#     expand( "00_RawData/{sample}.fastq", sample = SAMPLE_ID)
-
-#   conda: 
-#     "02_Container/fastqc.yaml"
-
-#   shell:
-#     "fastqc --outdir 05_Output/01_fastqc/ {input}"
+include: "04_Workflow/clean.smk"
