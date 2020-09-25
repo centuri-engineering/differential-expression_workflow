@@ -9,7 +9,7 @@ min_version("5.1.2")
 configfile: "config.yaml"
 validate(config, schema="06_Schemas/config.schema.yaml")
 
-samples = pd.read_table(config["samples"]).set_index(["project", "condition", "sample"], drop=False)
+samples = pd.read_table(config["samples"]).set_index(["project", "condition", "sample", "fq1", "fq2"], drop=False)
 validate(samples, schema="06_Schemas/samples.schema.yaml")
 
 # ----------------------------------------------
@@ -17,10 +17,9 @@ validate(samples, schema="06_Schemas/samples.schema.yaml")
 # ----------------------------------------------
 rule all:
   input:
-    expand( "{samples.project}_{samples.condition}_{samples.sample}_1.trimmed.fastq", samples=samples.itertuples()),
-    expand( "{samples.project}_{samples.condition}_{samples.sample}_2.trimmed.fastq", samples=samples.itertuples()),
-    expand( "{samples.project}_{samples.condition}_{samples.sample}_1un.trimmed.fastq", samples=samples.itertuples()),
-    expand( "{samples.project}_{samples.condition}_{samples.sample}_2un.trimmed.fastq", samples=samples.itertuples())
+    expand( "05_Output/03_fastqc/{samples}_{ext}_fastqc.trimmed.html", samples=samples.itertuples(),samples=SAMPLES, ext=["1","2"]),
+    expand( "05_Output/03_fastqc/{samples}_{ext}_fastqc.trimmed.zip", samples=samples.itertuples(),samples=SAMPLES, ext=["1","2"])
+
 
 # ----------------------------------------------
 # setup singularity 
