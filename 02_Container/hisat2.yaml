@@ -1,0 +1,4 @@
+channels:
+    - bioconda
+dependencies:
+    - hisat2=2.2.1 # alignment for NGS data. Python3 support 
