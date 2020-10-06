@@ -1,2 +1,14 @@
 # path or URL to sample sheet (TSV format, columns: sample, condition, ...)
 samples: samples.tsv
+
+ref:
+    # genome
+    genome: "01_Reference/GCF_000001405.39_GRCh38.p13_genomic.fna"
+    # the Hisat index
+    index: "05_Output/04_index/GRCH38"
+    # gff file with transcripts
+    annotation: "01_Reference/GCF_000001405.39_GRCh38.p13_genomic.gff"
+
+filtering:
+    # run to remove from the bulk RNA-seq analyse after fastqc introspection
+    rmrun: "NG-11683_Control_1_1_lib167668_5189_8, NG-11683_Control_1_3_lib167670_5189_8, NG-11683_Mutant_1_3_lib167676_5189_8"

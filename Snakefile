@@ -19,8 +19,7 @@ SAMPLES = expand("{samples.project}_{samples.condition}_{samples.sample}",sample
 
 rule all:
   input:
-    expand( "05_Output/03_fastqc_qual2/{samples}_{ext}.trimmed_fastqc.html", samples=SAMPLES, ext=["1","2"]),
-    expand( "05_Output/03_fastqc_qual2/{samples}_{ext}.trimmed_fastqc.zip", samples=SAMPLES, ext=["1","2"])
+    config["ref"]["index"]
 
 # ----------------------------------------------
 # setup singularity 
