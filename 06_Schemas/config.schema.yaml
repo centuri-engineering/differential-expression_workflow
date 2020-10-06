@@ -8,5 +8,26 @@ properties:
   samples:
     type: string
 
+  ref:
+    type: object
+    properties:
+      genome:
+        type: string
+      index:
+        type: string
+      annotation:
+        type: string
+    required:
+      - genome
+      - index
+      - annotation
+
+  filtering:
+    type: object
+    properties:
+      rmrun: string
+
 required:
     - samples
+    - ref
+    - filtering
