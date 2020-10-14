@@ -22,10 +22,10 @@ properties:
       - index
       - annotation
 
-  filtering:
-    type: object
-    properties:
-      rmrun: string
+  # filtering:
+  #   type: object
+  #   properties:
+  #     rmrun: string
 
 required:
     - samples

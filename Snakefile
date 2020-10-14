@@ -19,7 +19,7 @@ SAMPLES = expand("{samples.project}_{samples.condition}_{samples.sample}",sample
 
 rule all:
   input:
-    config["ref"]["index"]
+    "05_Output/07_cpm/count_matrix.txt"
 
 # ----------------------------------------------
 # setup singularity 

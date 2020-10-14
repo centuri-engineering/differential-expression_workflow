@@ -5,8 +5,8 @@ SAMPLES = expand("{samples.project}_{samples.condition}_{samples.sample}",sample
 # ----------------------------------------------
 # rule fastqc:
 #   output:
-#     expand( "05_Output/01_fastqc/{samples}_{ext}_fastqc.html", samples=samples.itertuples(),samples=SAMPLES, ext=["1","2"]),
-#     expand( "05_Output/01_fastqc/{samples}_{ext}_fastqc.zip", samples=samples.itertuples(),samples=SAMPLES, ext=["1","2"])
+#     expand( "05_Output/01_fastqc/{samples}_{ext}_fastqc.html", samples=SAMPLES, ext=["1","2"]),
+#     expand( "05_Output/01_fastqc/{samples}_{ext}_fastqc.zip", samples=SAMPLES, ext=["1","2"])
 
 #   input:
 #     expand( "00_RawData/{samples}_{ext}.fastq", samples=SAMPLES, ext=["1","2"])
