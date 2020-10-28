@@ -8,6 +8,9 @@ properties:
   samples:
     type: string
 
+  coldata:
+    type: string
+
   ref:
     type: object
     properties:
@@ -22,12 +25,29 @@ properties:
       - index
       - annotation
 
-  # filtering:
-  #   type: object
-  #   properties:
-  #     rmrun: string
+  filtering:
+    type: object
+    properties:
+      # thresh_cpm:
+      #   type: float
+      thresh_sample:
+        type: integer
+    required:
+      # - thresh_cpm
+      - thresh_sample
 
-required:
+  pca:
+    type: object
+    properties:
+      labels:
+        type: array
+        items:
+          type: string
+    required:
+      - labels
+
+  required:
     - samples
+    - coldata
     - ref
     - filtering

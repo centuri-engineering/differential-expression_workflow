@@ -19,7 +19,8 @@ SAMPLES = expand("{samples.project}_{samples.condition}_{samples.sample}",sample
 
 rule all:
   input:
-    "05_Output/07_cpm/count_matrix.txt"
+    "diffexp.html",
+    "07_Report/"
 
 # ----------------------------------------------
 # setup singularity 
@@ -29,9 +30,18 @@ rule all:
 # with --use-conda --use-singularity
 singularity: "docker://continuumio/miniconda3"
 
+
+# ----------------------------------------------
+# setup report
+# ----------------------------------------------
+
+report: "report/workflow.rst"
+
 # ----------------------------------------------
 # Load rules 
 # ----------------------------------------------
 
 include: "04_Workflow/clean.smk"
-include: "04_Workflow/alignment.smk"
+include: "04_Workflow/count.smk"
+include: "04_Workflow/diffexp.smk"
+
