@@ -12,11 +12,11 @@ Quick Start :
 - Complete the config.yaml indicating the file and parameters to use.
 
 Then you are ready to load the environment and run the workflow by using these commands in the  :
-docker run -i -t -v ${PWD}:/ibdm_rattier_rnaseq continuumio/miniconda3
+docker build -t ibdm_rattier_rnaseq /home/thomas/project/rattier/ibdm_rattier_rnaseq/
+docker run -it -v ${PWD}:/ibdm_rattier_rnaseq ibdm_rattier_rnaseq
 cd ibdm_rattier_rnaseq/
-conda env create -n envfair -f 02_Container/envfair.yaml
 conda activate envfair
-snakemake --use-conda -R
+snakemake --use-conda --use-singularity -R
 snakemake --report report.html
 
 

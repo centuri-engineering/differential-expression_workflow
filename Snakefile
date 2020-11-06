@@ -19,8 +19,7 @@ SAMPLES = expand("{samples.project}_{samples.condition}_{samples.sample}",sample
 
 rule all:
   input:
-    "diffexp.html",
-    "07_Report/"
+    "05_Output/09_data_quality/diffexp.html"
 
 # ----------------------------------------------
 # setup singularity 
@@ -28,14 +27,14 @@ rule all:
 
 # this container defines the underlying OS for each job when using the workflow
 # with --use-conda --use-singularity
-singularity: "docker://continuumio/miniconda3"
+#singularity: "docker://continuumio/miniconda3"
 
 
 # ----------------------------------------------
 # setup report
 # ----------------------------------------------
 
-report: "report/workflow.rst"
+#report: "report/workflow.rst"
 
 # ----------------------------------------------
 # Load rules 
@@ -44,4 +43,3 @@ report: "report/workflow.rst"
 include: "04_Workflow/clean.smk"
 include: "04_Workflow/count.smk"
 include: "04_Workflow/diffexp.smk"
-

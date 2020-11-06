@@ -16,7 +16,7 @@ rule deseq2_init:
     cts = "05_Output/07_cpm/count_filtered.txt",
     coldata = config["coldata"]
     
-  conda: 
+  conda:
     "../02_Container/deseq2.yaml"
 
   params:
@@ -32,21 +32,21 @@ rule deseq2_init:
 rule diffexp:
   input:
     rds = "05_Output/08_deseq2_init/all.rds",
-    rmd = "07_Report/diffexp.Rmd",
-    pca = "03_Script/plot-pca.R"
+    rmd = "03_Script/diffexp.Rmd",
+    pca = "03_Script/data_quality.R"
   
   output:
     #report("05_Output/09_pca/pca.pdf", caption="report/pca.rst", category="PCA")
-    html_report = "diffexp.html",
-    OUTPUT_DIR = "07_Report"
+    html_report = "05_Output/09_data_quality/diffexp.html"
+    # Voir si figure en output
   
   params:
     pca_labels=config["pca"]["labels"]
 
+  # singularity: 
+  #   "docker://rocker/r-rmd"
   # conda:
   #   "../02_Container/deseq2.yaml"
-  singularity:
-    "docker://rocker/verse:3.5.1"
-    
+
   script:
-    "../07_Report/launch_reports_compilation.R"
+    "../03_Script/diffexp_reports_compilation.R"

@@ -6,15 +6,5 @@ channels:
 dependencies:
   - r-base =4.0
   - bioconductor-deseq2 =1.28.0
-  - bioconductor-biocparallel =1.22.0
-  - r-readr =1.4.0
-  - r-knitr
-  - r-markdown
-  - r-rmarkdown
-  - r-htmltools
-  - r-kableExtra
-  - r-DT
-  - r-d3heatmap
-  - r-ggiraph
-  - pandoc
-  - unsquashfs
+
+

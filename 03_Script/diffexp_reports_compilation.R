@@ -3,12 +3,16 @@
 # independently of Rstudio interface
 # ##########################################################################
 
-WORKING_DIR = "./"
+WORKING_DIR = "/ibdm_rattier_rnaseq"
 
-SCRIPT_DIR = file.path( WORKING_DIR, "07_Report")
-OUTPUT_DIR = file.path( WORKING_DIR, "07_Report")
+STEP = "09_data_quality"
+
+SCRIPT_DIR = file.path( WORKING_DIR, "03_Script")
+OUTPUT_DIR = file.path( WORKING_DIR, "05_Output")
+
+RDS = snakemake@input[["rds"]]
 
 rmarkdown::render( input = file.path( SCRIPT_DIR, "diffexp.Rmd"),
-                   output_dir = OUTPUT_DIR,
+                   output_dir = file.path( OUTPUT_DIR, STEP),
                    output_file  = "diffexp.html",
                    quiet = FALSE)
