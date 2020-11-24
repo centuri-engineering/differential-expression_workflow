@@ -6,5 +6,6 @@ channels:
 dependencies:
   - r-base =4.0
   - bioconductor-deseq2 =1.28.0
+  - r-readr
 
 

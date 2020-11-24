@@ -46,8 +46,20 @@ properties:
     required:
       - labels
 
+  diffexp:
+    type: object
+    properties:
+      ref_level:
+        type: string
+      lfcshrink_type:
+        type: string
+    required:
+      - ref_level
+      - lfcshrink_type
+
   required:
     - samples
     - coldata
     - ref
     - filtering
+    - diffexp

@@ -16,7 +16,7 @@ docker build -t ibdm_rattier_rnaseq /home/thomas/project/rattier/ibdm_rattier_rn
 docker run -it -v ${PWD}:/ibdm_rattier_rnaseq ibdm_rattier_rnaseq
 cd ibdm_rattier_rnaseq/
 conda activate envfair
-snakemake --use-conda --use-singularity -R
+snakemake --use-conda -R 
 snakemake --report report.html
 
 

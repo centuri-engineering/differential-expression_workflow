@@ -34,11 +34,11 @@ for (i in 1:length(file_list)) {
 }
 
 # write the dataframe with count value of each samples
-write.table(dataframe_total_count, file = output_count,quote = FALSE,row.names = FALSE, col.names = FALSE)
+write.table(dataframe_total_count, file = output_count, sep="\t", quote = FALSE,row.names = FALSE, col.names = FALSE)
 
 # Matrix transformation for cpm calculation
 mtx_total_count <- as.matrix(dataframe_total_count[-1,-1])
-class(mtx_total_count)<-"numeric"
+class(mtx_total_count) <- "numeric"
 cpm <- cpm(mtx_total_count)
 df_cpm <- as.data.frame(cpm)
 df_cpm <- cbind(Gene_id=dataframe_total_count[-1,1], df_cpm)
@@ -63,7 +63,7 @@ for (j in 1:nrow(df_cpm)) {
 }
 
 df_cpm_filter <- rbind(dataframe_total_count[1,],df_cpm_filter)
-write.table(df_cpm_filter, file = output_cpm, quote = FALSE, row.names = FALSE, col.names = FALSE)
+write.table(df_cpm_filter, file = output_cpm, sep="\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
 
 # Dataframe with the count value of the genes without low expressed genes
 colnames_genes = colnames(dataframe_total_count[1,])

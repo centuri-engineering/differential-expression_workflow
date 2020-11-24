@@ -15,9 +15,9 @@ if (snakemake@threads > 1) {
     parallel <- TRUE
 }
 
-#input_cts=snakemake@input[["cts"]]
 project=snakemake@params[["project"]]
 samples=snakemake@params[["samples"]]
+ref_level=snakemake@params[["ref_level"]]
 
 # Rename column name of the count matrix as coldata
 # colData and countData must have the same sample order
@@ -43,17 +43,20 @@ coldata$type <- factor(coldata_read$type)
 
 #write.table(coldata, file = snakemake@output[["count_modif"]], quote = FALSE, row.names = FALSE, col.names = FALSE)
 
+# Create the DESeq2 object
 dds <- DESeqDataSetFromMatrix(countData = cts,
                               colData = coldata,
                               design = ~ condition)
 
-# remove uninformative columns
+# Remove uninformative columns
 dds <- dds[ rowSums(counts(dds)) > 10, ]
-# normalization and preprocessing
+
+# Specifying the reference level
+dds$condition <- relevel(dds$condition, ref = ref_level)
+
+# DESeq : Normalization and preprocessing (counts divided by sample-specific size factors
+# determined by median ratio of gene counts relative to geometric mean per gene)
 dds <- DESeq(dds, parallel=parallel)
-# Add from the Lionel workflow
 dds <- estimateSizeFactors( dds)
 
 saveRDS(dds, file=snakemake@output[["rds"]])
-
-#sessionInfo()

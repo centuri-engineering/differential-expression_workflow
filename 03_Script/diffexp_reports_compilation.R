@@ -5,7 +5,7 @@
 
 WORKING_DIR = "/ibdm_rattier_rnaseq"
 
-STEP = "09_data_quality"
+STEP = "09_differential_expression"
 
 SCRIPT_DIR = file.path( WORKING_DIR, "03_Script")
 OUTPUT_DIR = file.path( WORKING_DIR, "05_Output")

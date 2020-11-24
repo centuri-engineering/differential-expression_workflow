@@ -1,0 +1,1 @@
+Statistic on the pairwise comparison: Log fold change calculated with the shrinkage astimators and p-values and adjusted p-values
