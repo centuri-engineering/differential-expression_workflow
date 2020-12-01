@@ -41,8 +41,6 @@ rownames(coldata) <- coldata_read[,1]
 coldata$condition <- factor(coldata_read$condition)
 coldata$type <- factor(coldata_read$type)
 
-#write.table(coldata, file = snakemake@output[["count_modif"]], quote = FALSE, row.names = FALSE, col.names = FALSE)
-
 # Create the DESeq2 object
 dds <- DESeqDataSetFromMatrix(countData = cts,
                               colData = coldata,
@@ -57,6 +55,6 @@ dds$condition <- relevel(dds$condition, ref = ref_level)
 # DESeq : Normalization and preprocessing (counts divided by sample-specific size factors
 # determined by median ratio of gene counts relative to geometric mean per gene)
 dds <- DESeq(dds, parallel=parallel)
-dds <- estimateSizeFactors( dds)
+#dds <- estimateSizeFactors( dds)
 
 saveRDS(dds, file=snakemake@output[["rds"]])

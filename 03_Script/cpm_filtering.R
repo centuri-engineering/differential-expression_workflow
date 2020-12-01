@@ -18,11 +18,14 @@ output_filter_count=snakemake@output[["output_filter_count"]]
 # Dataframe with the gene count for selected sample
 dataframe_total_count <- data.frame()
 # Remove the duplicate sequenced library with error in the fastqc report
+
 rmrun_list = as.list(strsplit(snakemake@params[["rmrun_list"]], ",")[[1]])
-for (i in 1:length(rmrun_list)) {
-    name <- rmrun_list[[i]]
-    rmrun_file <- as.numeric(grep(pattern = name, file_list))
-    file_list <- file_list[-rmrun_file]
+if(length(rmrun_list)!=0){
+  for (i in 1:length(rmrun_list)) {
+      name <- rmrun_list[[i]]
+      rmrun_file <- as.numeric(grep(pattern = name, file_list))
+      file_list <- file_list[-rmrun_file]
+  }
 }
 
 gene_name <- read.delim(file_list[[1]], header=FALSE, comment.char="#", quote="")
@@ -63,7 +66,7 @@ for (j in 1:nrow(df_cpm)) {
 }
 
 df_cpm_filter <- rbind(dataframe_total_count[1,],df_cpm_filter)
-write.table(df_cpm_filter, file = output_cpm, sep="\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
+write.table(df_cpm_filter, file = output_cpm, sep=" ", quote = FALSE, row.names = FALSE, col.names = FALSE)
 
 # Dataframe with the count value of the genes without low expressed genes
 colnames_genes = colnames(dataframe_total_count[1,])

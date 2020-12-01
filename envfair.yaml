@@ -37,3 +37,4 @@ dependencies :
 - bioconductor-apeglm
 - bioconductor-pcaexplorer
 - bioconductor-enhancedvolcano
+- bioconductor-ashr

@@ -12,10 +12,9 @@ ENV PATH /opt/conda/envs/envfair/bin:$PATH
 ENV PATH /opt/conda/envs/envfair/lib/R/library:$PATH
 ENV PATH /opt/conda/envs/envfair/lib/python3.7/site-packages:$PATH
 
-# Activation de directement l'environnement
+# Activation conda environment
 RUN echo "source activate envfair" > ~/.bashrc
-# Run the workflow
-#RUN echo "snakemake --use-conda --use-singularity -R" >> ~/.bashrc
+RUN echo "cd de_workflow"
 
 
 

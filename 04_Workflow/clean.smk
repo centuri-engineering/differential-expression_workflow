@@ -45,16 +45,16 @@ SAMPLES = expand("{samples.project}_{samples.condition}_{samples.sample}",sample
 # ----------------------------------------------
 # FastQC to check the reads trimmed quality
 # ----------------------------------------------
-rule fastqc_trimmed:
-  output:
-    report(expand( "05_Output/03_fastqc/{samples}_{ext}.trimmed_fastqc.html", samples=SAMPLES, ext=["1","2"]), caption="../report/fastqc.rst", category="Row data quality"),
-    expand( "05_Output/03_fastqc/{samples}_{ext}.trimmed_fastqc.zip", samples=SAMPLES, ext=["1","2"])
+# rule fastqc_trimmed:
+#   output:
+#     report(expand( "05_Output/03_fastqc/{samples}_{ext}.trimmed_fastqc.html", samples=SAMPLES, ext=["1","2"]), caption="../report/fastqc.rst", category="Row data quality"),
+#     expand( "05_Output/03_fastqc/{samples}_{ext}.trimmed_fastqc.zip", samples=SAMPLES, ext=["1","2"])
 
-  input:
-    expand( "05_Output/02_trimmomatic/{samples}_{ext}.trimmed.fastq", samples=SAMPLES, ext=["1","2"])
+#   input:
+#     expand( "05_Output/02_trimmomatic/{samples}_{ext}.trimmed.fastq", samples=SAMPLES, ext=["1","2"])
 
-  conda: 
-    "../02_Container/fastqc.yaml"
+#   conda: 
+#     "../02_Container/fastqc.yaml"
 
-  shell:
-    "fastqc --outdir 05_Output/03_fastqc/ {input}"
+#   shell:
+#     "fastqc --outdir 05_Output/03_fastqc/ {input}"

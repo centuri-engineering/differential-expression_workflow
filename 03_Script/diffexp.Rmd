@@ -1,5 +1,5 @@
 ---
-title: "Differential expression"
+title: "Epithelial integrity controls competency of hiPSCs - Rnaseq transcriptomic"
 output:
   html_document: 
     theme: cerulean
@@ -26,7 +26,7 @@ library(RColorBrewer)
 library(readr)
 library(DT)
 library(pcaExplorer)
-library(ashr)
+#library(ashr)
 library(EnhancedVolcano)
 ```
 
@@ -47,21 +47,22 @@ when the size factors vary widely. The transformation is useful when checking fo
 
 ## Heatmap of the count matrix
 
-- Heatmap of the 30 genes with the top and bottom loadings.
+- Heatmap of the 50 genes with the top and bottom loadings.
 (i.e. the genes that explain the best the variability on the PCA component).
 
 ```{r heatmap-count, echo=FALSE, results = "asis", message=FALSE}
 <<heatmap-count>>
 ```
 
-## Principal component plot of the samples
+## Principal component analysis (PCA)
 
-We report for each 2 first components of the PCA the 30 genes with the  top and bottom loadings.
+We report the different components (CP1/CP2 and CP3/CP4) of the PCA
+to see if it fit the expectation from the experimental design.
+PCA are calculated using the regularized log transform (rlog) of 
+the normalized counts for all genes.
 
 ```{r plot-pca, echo=FALSE, results = "asis"}
-<<heatmap-count>>
 <<plot-pca>>
-<<heatmap-distance>>
 ```
 
 ## Heatmap of the sample-to-sample distances
@@ -71,6 +72,14 @@ A heatmap of this distance matrix gives us an overview over similarities and dis
 
 ```{r heatmap-distance, echo=FALSE, results = "asis"}
 <<heatmap-distance>>
+```
+
+## Gene counts
+
+We plot the normalized count value of a gene of interest to compare the expression in the different conditions
+
+```{r plot-gene, echo=FALSE, results = "asis"}
+<<plot-gene>>
 ```
 
 # Differential expression analysis

@@ -1,3 +1,10 @@
-condition
-Control_2
-Mutant_1
+project	condition	type
+Control_1_1	Control_1	paired-end
+Control_1_2	Control_1	paired-end
+Control_1_3	Control_1	paired-end
+Control_2_1	Control_2	paired-end
+Control_2_2	Control_2	paired-end
+Control_2_3	Control_2	paired-end
+Mutant_1_1	Mutant_1	paired-end
+Mutant_1_2	Mutant_1	paired-end
+Mutant_1_3	Mutant_1	paired-end

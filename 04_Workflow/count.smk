@@ -58,7 +58,6 @@ annotation = config["ref"]["annotation"]
 #     done
 #     """
 
-
 # ----------------------------------------------
 # featureCounts: read count/summarization program
 # ----------------------------------------------
@@ -90,9 +89,9 @@ annotation = config["ref"]["annotation"]
 
 rule cpm_filtering:
   output:
-    count_df = report("05_Output/07_cpm/count.tsv", caption="../report/count.rst", category="01 Count matrices"),
+    count_df = report("05_Output/07_cpm/count.txt", caption="../report/count.rst", category="01 Count matrices"),
     output_filter_count = report("05_Output/07_cpm/count_filtered.txt", caption="../report/count_filtered.rst", category="01 Count matrices"),
-    cpm = report("05_Output/07_cpm/cpm_filtered.tsv", caption="../report/cpm_filtered.rst", category="01 Count matrices")
+    cpm = report("05_Output/07_cpm/cpm_filtered.txt", caption="../report/cpm_filtered.rst", category="01 Count matrices")
 
   input:
     path = "05_Output/06_featurecounts"

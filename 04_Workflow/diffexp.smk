@@ -12,6 +12,7 @@ def get_deseq2_threads(wildcards=None):
 rule deseq2_init:
   input:
     cts = "05_Output/07_cpm/count_filtered.txt",
+    #cts = "05_Output/07_cpm/cpm_filtered.txt",
     coldata = config["coldata"]
 
   output:
@@ -33,18 +34,20 @@ rule deseq2_init:
 
 rule diffexp:
   input:
-    rds = "/ibdm_rattier_rnaseq/05_Output/08_deseq2_init/all.rds",
+    rds = "05_Output/08_deseq2_init/all.rds",
     rmd = "03_Script/diffexp.Rmd",
     pca = "03_Script/data_quality.R"
   
   output:
     html_report=report("05_Output/09_differential_expression/diffexp.html", caption="../report/diffexp.rst", category="03 Report differential expression"),
-    table=report(expand("05_Output/09_differential_expression/{coldata.condition}_vs_{ref_level}.csv", coldata=coldata.itertuples(), ref_level=ref_level), caption="../report/stat.rst", category="03 Report differential expression")
-
+    table=report(expand("05_Output/09_differential_expression/{condition.condition}_vs_{ref_level}.csv", condition=condition.itertuples(), ref_level=ref_level), caption="../report/stat.rst", category="03 Report differential expression"),
+    sur=report(expand("05_Output/09_differential_expression/{condition.condition}_vs_{ref_level}_signif-up-regulated.csv", condition=condition.itertuples(), ref_level=ref_level), caption="../report/stat.rst", category="03 Report differential expression"),
+    sdr=report(expand("05_Output/09_differential_expression/{condition.condition}_vs_{ref_level}_signif-down-regulated.csv", condition=condition.itertuples(), ref_level=ref_level), caption="../report/stat.rst", category="03 Report differential expression")
   params:
     pca_labels=config["pca"]["labels"],
     ref_level = config["diffexp"]["ref_level"],
     lfcshrink_type = config["diffexp"]["lfcshrink_type"],
+    gene_name = config["diffexp"]["gene_name"]
 
   script:
     "../03_Script/diffexp_reports_compilation.R"

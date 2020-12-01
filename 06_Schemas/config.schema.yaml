@@ -11,6 +11,9 @@ properties:
   coldata:
     type: string
 
+  condition:
+    type: string
+
   ref:
     type: object
     properties:
@@ -53,13 +56,17 @@ properties:
         type: string
       lfcshrink_type:
         type: string
+      gene_name:
+        type: string
     required:
       - ref_level
       - lfcshrink_type
+      - gene_name
 
   required:
     - samples
     - coldata
+    - condition
     - ref
     - filtering
     - diffexp

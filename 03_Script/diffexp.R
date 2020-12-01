@@ -23,9 +23,11 @@ for (i in 1:length(comparison_df)) {
     write.table(as.data.frame(rlog_results), file= paste("../05_Output/09_differential_expression/",outputname,".csv", sep=""))
 
     ## MA-plot
-    xlim <- c(500,5000); ylim <- c(-4,4)
+    #pdf(file = paste(outputname,"maplot.pdf"), width = 9, height = 9, pointsize = 10)
+    xlim <- c(500,5000); ylim <- c(-2,2)
     plotMA(rlog_results, xlim=xlim, ylim=ylim, main=comparison_df[[i]])
     idx <- identify(rlog_results$baseMean, rlog_results$log2FoldChange)
+    #dev.off()
 
     ## Volcano plot
     FC <- 0.584963
@@ -42,9 +44,13 @@ for (i in 1:length(comparison_df)) {
 
     keyvals[which(rlog_results$log2FoldChange < -FC & rlog_results$padj < p)] <- 'blue2'
     names(keyvals)[which(rlog_results$log2FoldChange  < -FC & rlog_results$padj < p)] <- 'Signif. down-regulated'
+    sdr <- subset(rlog_results, (rlog_results$log2FoldChange  < -FC) & (rlog_results$padj < p))
+    write.table(as.data.frame(sdr), file= paste("../05_Output/09_differential_expression/",outputname,"_signif-down-regulated.csv", sep=""))
 
     keyvals[which(rlog_results$log2FoldChange > FC & rlog_results$padj < p)] <- 'red2'
     names(keyvals)[which(rlog_results$log2FoldChange > FC & rlog_results$padj < p)] <- 'Signif. up-regulated'
+    sur <- subset(rlog_results, (rlog_results$log2FoldChange > FC) & (rlog_results$padj < p))
+    write.table(as.data.frame(sur), file= paste("../05_Output/09_differential_expression/",outputname,"_signif-up-regulated.csv", sep=""))
 
     unique(keyvals)
     unique(names(keyvals))
@@ -77,8 +83,9 @@ for (i in 1:length(comparison_df)) {
     border = 'partial',
     borderWidth = 1.5,
     borderColour = 'black')
+    #pdf(paste(outputname,"volcano.pdf"), width = 9, height = 9, pointsize = 10)
     plot(volcanoplot_padj)
-
+    #dev.off()
 
     ## Volcanoplot with the p-value
     # keyvals <- rep('grey75', nrow(rlog_results))

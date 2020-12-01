@@ -1,6 +1,7 @@
 # path or URL to sample sheet (TSV format, columns: sample, condition, ...)
 samples: sample.tsv
 coldata: coldata.tsv
+condition: condition.tsv
 
 ref:
     # Reference Genome
@@ -12,8 +13,8 @@ ref:
 
 filtering:
     # Run to remove from the bulk RNA-seq analyse after fastqc introspection (separated by ,) in the cpm_filtering.R script
-    rmrun: "NG-11683_Control_1_1_lib167668_5189_8,NG-11683_Control_1_3_lib167670_5189_8,NG-11683_Mutant_1_3_lib167676_5189_8"
-    #rmrun: "NG-11683_Control_1_1_lib167668_5189_8,NG-11683_Control_1_3_lib167670_5230_1,NG-11683_Mutant_1_3_lib167676_5230_1"
+    #rmrun: "NG-11683_Control_1_1_lib167668_5189_8,NG-11683_Control_1_3_lib167670_5189_8,NG-11683_Mutant_1_3_lib167676_5189_8"
+    rmrun: ""
     # cpm threshold to filter the low expressed genes
     thresh_cpm: 0.5
     # Minimum number of samples to have a high expressed genes (depending of the cpm threshold)
@@ -28,5 +29,7 @@ diffexp:
     # Reference to do the comparison
     ref_level: "Control_1"
     # Shrinkage estimator for ranking and visualization (apeglm, normal or ashr)
-    lfcshrink_type: "normal"
+    lfcshrink_type: "apeglm"
+    # Gene name to see the expression between the condition
+    gene_name: "GPC4"
     
