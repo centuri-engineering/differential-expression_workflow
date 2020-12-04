@@ -25,7 +25,9 @@ We would be pleased if you use this workflow and participate in its improvement.
 
 ### Step 2: Configure workflow
 
-Configure the workflow according to your needs via editing the files:
+Configure the workflow according to your needs via editing the files and repositories:
+- 00_RawData need the pair-end fastq file of each run to analyse
+- 01_Reference the fasta file and gff/gtf of your reference genome for the mapping step
 - [sample.tsv](/sample.tsv), [coldata.tsv](/coldata.tsv) and [condition.tsv](/condition.tsv) to indicate the samples, run, condition, etc. for the analyse.
 - [config.yaml](/config.yaml) indicating the parameters to use.
 
@@ -34,15 +36,20 @@ Configure the workflow according to your needs via editing the files:
 You need [Docker](https://docs.docker.com/get-docker/) installed on your computer.
 
 - Load the docker environment and run the workflow by using these commands:
-`docker build -t de_workflow /home/thomas/project/rattier/ibdm_rattier_rnaseq/`
-`docker build -t de_workflow yourpath/de_workflow`
-`docker run -it -v ${PWD}:/de_workflow de_workflow`
+
+`docker build -t de_workflow /home/thomas/project/rattier/ibdm_rattier_rnaseq/\n`
+
+`docker build -t de_workflow yourpath/de_workflow\n`
+
+`docker run -it -v ${PWD}:/de_workflow de_workflow\n`
 
 - Then execute the workflow locally via
-`cd de_workflow/`
-`snakemake --use-conda -R`
+`cd de_workflow/\n`
+
+`snakemake --use-conda -R\n`
 
 ### Step 4: Investigate results 
 
 After successful execution, you can create a self-contained interactive HTML report with all results via:
+
 `snakemake --report report.html`
