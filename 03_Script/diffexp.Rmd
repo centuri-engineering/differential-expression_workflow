@@ -1,5 +1,9 @@
 ---
-title: "Epithelial integrity controls competency of hiPSCs - Rnaseq transcriptomic"
+title: "Epithelial integrity controls competency of hiPSCs into Primitive Streak by regulatoring TGF-b receptor accessibility"
+subtitle: "Bioinformatics project | IBDM | Rosana Dono & Diane Rattier"
+author:
+- Thomas Vannier | CENTURI Multi-Engineering Platform
+date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
   html_document: 
     theme: cerulean
@@ -97,7 +101,15 @@ either up or down. All genes are presented in the MA plots
 
 Volcanoplot representing the significance versus fold-change on the y and x axes.
 
-```{r diffexp, echo=FALSE, results = "asis", message=FALSE, warning = FALSE}
+```{r diffexp, echo=FALSE, fig.width=8, fig.height=9, results = "asis", message=FALSE, warning = FALSE}
 <<diffexp>>
+```
+
+## Top differentially expressed genes
+
+We plot the normalized count values for the top 20 differentially expressed genes (by padj values).
+
+```{r toppadj, echo=FALSE, results = "asis", message=FALSE, warning = FALSE}
+<<toppadj>>
 ```
 

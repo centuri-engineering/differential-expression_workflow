@@ -12,19 +12,18 @@ def get_deseq2_threads(wildcards=None):
 rule deseq2_init:
   input:
     cts = "05_Output/07_cpm/count_filtered.txt",
-    #cts = "05_Output/07_cpm/cpm_filtered.txt",
     coldata = config["coldata"]
 
   output:
-    rds = "05_Output/08_deseq2_init/all.rds"
-        
+    rds = "05_Output/08_deseq2_init/all.rds",
+    normalized_counts_file = report("05_Output/08_deseq2_init/normalized_counts.tsv", caption="../report/normalized_counts.rst", category="02 Count matrices")
   conda:
     "../02_Container/deseq2.yaml"
 
   params:
     project = expand("{samples.project}",samples=samples.itertuples()),
     samples = expand("{samples.sample}",samples=samples.itertuples()),
-    ref_level = config["diffexp"]["ref_level"]
+    ref_level = config["diffexp"]["ref_level"],
 
   threads: get_deseq2_threads()
 
@@ -36,18 +35,20 @@ rule diffexp:
   input:
     rds = "05_Output/08_deseq2_init/all.rds",
     rmd = "03_Script/diffexp.Rmd",
-    pca = "03_Script/data_quality.R"
-  
+    pca = "03_Script/data_quality.R",
+    coldata = config["coldata"]
   output:
     html_report=report("05_Output/09_differential_expression/diffexp.html", caption="../report/diffexp.rst", category="03 Report differential expression"),
-    table=report(expand("05_Output/09_differential_expression/{condition.condition}_vs_{ref_level}.csv", condition=condition.itertuples(), ref_level=ref_level), caption="../report/stat.rst", category="03 Report differential expression"),
-    sur=report(expand("05_Output/09_differential_expression/{condition.condition}_vs_{ref_level}_signif-up-regulated.csv", condition=condition.itertuples(), ref_level=ref_level), caption="../report/stat.rst", category="03 Report differential expression"),
-    sdr=report(expand("05_Output/09_differential_expression/{condition.condition}_vs_{ref_level}_signif-down-regulated.csv", condition=condition.itertuples(), ref_level=ref_level), caption="../report/stat.rst", category="03 Report differential expression")
+    table=report(expand("05_Output/09_differential_expression/{condition.condition}_vs_{ref_level}_all_genes_stats.tsv", condition=condition.itertuples(), ref_level=ref_level), caption="../report/stat.rst", category="04 Table differential expression"),
+    sur=report(expand("05_Output/09_differential_expression/{condition.condition}_vs_{ref_level}_signif-up-regulated.txt", condition=condition.itertuples(), ref_level=ref_level), caption="../report/stat.rst", category="04 Table differential expression"),
+    sdr=report(expand("05_Output/09_differential_expression/{condition.condition}_vs_{ref_level}_signif-down-regulated.txt", condition=condition.itertuples(), ref_level=ref_level), caption="../report/stat.rst", category="04 Table differential expression")
   params:
     pca_labels=config["pca"]["labels"],
     ref_level = config["diffexp"]["ref_level"],
     lfcshrink_type = config["diffexp"]["lfcshrink_type"],
-    gene_name = config["diffexp"]["gene_name"]
-
+    gene_name = config["diffexp"]["gene_name"],
+    mutant_level = config["diffexp"]["mutant_level"],
+    nbpval = config["diffexp"]["nbpval"],
+    
   script:
     "../03_Script/diffexp_reports_compilation.R"

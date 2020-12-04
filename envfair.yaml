@@ -34,7 +34,6 @@ dependencies :
 #- bioconductor-ihw
 - conda-forge::r-rcolorbrewer=1.1_2
 - conda-forge::r-dt=0.16
-- bioconductor-apeglm
-- bioconductor-pcaexplorer
-- bioconductor-enhancedvolcano
-- bioconductor-ashr
+- bioconductor-apeglm=1.10.0
+- bioconductor-pcaexplorer=2.14.0
+- bioconductor-enhancedvolcano=1.8.0

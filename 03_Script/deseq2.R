@@ -15,9 +15,11 @@ if (snakemake@threads > 1) {
     parallel <- TRUE
 }
 
+# Loading the parameters
 project=snakemake@params[["project"]]
 samples=snakemake@params[["samples"]]
 ref_level=snakemake@params[["ref_level"]]
+normalized_counts_file=snakemake@output[["normalized_counts_file"]]
 
 # Rename column name of the count matrix as coldata
 # colData and countData must have the same sample order
@@ -46,8 +48,8 @@ dds <- DESeqDataSetFromMatrix(countData = cts,
                               colData = coldata,
                               design = ~ condition)
 
-# Remove uninformative columns
-dds <- dds[ rowSums(counts(dds)) > 10, ]
+# Remove uninformative columns (to do when filter not already done with the CPM threshold)
+#dds <- dds[ rowSums(counts(dds)) > 10, ]
 
 # Specifying the reference level
 dds$condition <- relevel(dds$condition, ref = ref_level)
@@ -55,6 +57,12 @@ dds$condition <- relevel(dds$condition, ref = ref_level)
 # DESeq : Normalization and preprocessing (counts divided by sample-specific size factors
 # determined by median ratio of gene counts relative to geometric mean per gene)
 dds <- DESeq(dds, parallel=parallel)
+# To save the object in a file for later use
+saveRDS(dds, file=snakemake@output[["rds"]])
+
+# Already done in the DESeq function
 #dds <- estimateSizeFactors( dds)
 
-saveRDS(dds, file=snakemake@output[["rds"]])
+# Save the normalized data matrix
+normalized_counts <- counts(dds, normalized=TRUE)
+write.table(normalized_counts, file=normalized_counts_file, sep="\t", quote=F, col.names=NA)

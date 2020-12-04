@@ -1,1 +1,1 @@
-Count matrix with all genes (without filtering)
+Count matrix (without genes filtering)

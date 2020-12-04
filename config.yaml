@@ -16,7 +16,7 @@ filtering:
     #rmrun: "NG-11683_Control_1_1_lib167668_5189_8,NG-11683_Control_1_3_lib167670_5189_8,NG-11683_Mutant_1_3_lib167676_5189_8"
     rmrun: ""
     # cpm threshold to filter the low expressed genes
-    thresh_cpm: 0.5
+    thresh_cpm: 1
     # Minimum number of samples to have a high expressed genes (depending of the cpm threshold)
     thresh_sample: 3
 
@@ -32,4 +32,9 @@ diffexp:
     lfcshrink_type: "apeglm"
     # Gene name to see the expression between the condition
     gene_name: "GPC4"
+    # Mutant to represent the gene with the top p-value
+    mutant_level: "Mutant_1"
+    # Number of genes to select with the best p-value
+    nbpval: 20
+
     

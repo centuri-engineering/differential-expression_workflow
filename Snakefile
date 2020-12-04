@@ -27,9 +27,9 @@ ref_level = config["diffexp"]["ref_level"]
 rule all:
   input:
     "05_Output/09_differential_expression/diffexp.html",
-    expand("05_Output/09_differential_expression/{condition.condition}_vs_{ref_level}.csv",condition=condition.itertuples(),ref_level=ref_level),
-    expand("05_Output/09_differential_expression/{condition.condition}_vs_{ref_level}_signif-up-regulated.csv", condition=condition.itertuples(), ref_level=ref_level),
-    expand("05_Output/09_differential_expression/{condition.condition}_vs_{ref_level}_signif-down-regulated.csv", condition=condition.itertuples(), ref_level=ref_level)
+    expand("05_Output/09_differential_expression/{condition.condition}_vs_{ref_level}_all_genes_stats.tsv",condition=condition.itertuples(),ref_level=ref_level),
+    expand("05_Output/09_differential_expression/{condition.condition}_vs_{ref_level}_signif-up-regulated.txt", condition=condition.itertuples(), ref_level=ref_level),
+    expand("05_Output/09_differential_expression/{condition.condition}_vs_{ref_level}_signif-down-regulated.txt", condition=condition.itertuples(), ref_level=ref_level)
   
 # ----------------------------------------------
 # setup singularity 
@@ -39,12 +39,18 @@ rule all:
 # with --use-conda --use-singularity
 #singularity: "docker://continuumio/miniconda3"
 
-
 # ----------------------------------------------
 # setup report
 # ----------------------------------------------
 
 report: "report/workflow.rst"
+
+
+# ----------------------------------------------
+# Impose rule order for the execution of the workflow 
+# ----------------------------------------------
+
+ruleorder: trimmomatic > fastqc_trimmed > hisat_build > hisat > featureCounts > cpm_filtering > deseq2_init > diffexp
 
 # ----------------------------------------------
 # Load rules 

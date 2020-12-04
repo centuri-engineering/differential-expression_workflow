@@ -9,7 +9,7 @@ vsd <- vst(dds, blind=TRUE)
 # Regularized log transformation
 rld <- rlog(dds, blind=TRUE)
 
-# 30 genes with top and bottom loadings
+# 50 genes with top and bottom loadings
 pcaobj <- prcomp(t(SummarizedExperiment::assay(rld)))
 hi_load <- hi_loadings(pcaobj, topN = 50, exprTable = log2(counts(dds, normalized=TRUE)) + 1)
 

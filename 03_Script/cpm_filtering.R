@@ -10,7 +10,7 @@ library(MASS)
 library(edgeR)
 
 # Browse the list of file count to produce a matrix
-file_list=list.files(snakemake@input[["path"]],pattern = "_count.txt$", full.names=TRUE)
+file_list=list.files(snakemake@params[["path"]],pattern = "_count.txt$", full.names=TRUE)
 output_count=snakemake@output[["count_df"]]
 output_cpm=snakemake@output[["cpm"]]
 output_filter_count=snakemake@output[["output_filter_count"]]
