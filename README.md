@@ -37,16 +37,16 @@ You need [Docker](https://docs.docker.com/get-docker/) installed on your compute
 
 - Load the docker environment and run the workflow by using these commands:
 
-`docker build -t de_workflow /home/thomas/project/rattier/ibdm_rattier_rnaseq/\n`
+`docker build -t de_workflow /home/thomas/project/rattier/ibdm_rattier_rnaseq/`
 
-`docker build -t de_workflow yourpath/de_workflow\n`
+`docker build -t de_workflow yourpath/de_workflow`
 
-`docker run -it -v ${PWD}:/de_workflow de_workflow\n`
+`docker run -it -v ${PWD}:/de_workflow de_workflow`
 
 - Then execute the workflow locally via
-`cd de_workflow/\n`
+`cd de_workflow/`
 
-`snakemake --use-conda -R\n`
+`snakemake --use-conda -R`
 
 ### Step 4: Investigate results 
 
