@@ -107,9 +107,7 @@ Volcanoplot representing the significance versus fold-change on the y and x axes
 
 ## Top differentially expressed genes
 
-We plot the normalized count values for the top 20 differentially expressed genes (by padj values).
-
-```{r toppadj, echo=FALSE, results = "asis", message=FALSE, warning = FALSE}
+```{r toppadj, echo=FALSE, results = "asis", fig.width=9, fig.height=7, message=FALSE, warning = FALSE}
 <<toppadj>>
 ```
 

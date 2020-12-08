@@ -24,7 +24,10 @@ rule hisat_build:
     "../02_Container/hisat2.yaml"
 
   shell:
-    "hisat2-build {input} {output}"
+    """
+    index=({config.ref.index})
+    "hisat2-build {input} ${{index}}"
+    """
 
 # ----------------------------------------------
 # HISAT2: alignment of NGS reads to a population of genomes

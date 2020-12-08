@@ -26,7 +26,7 @@ rule trimmomatic:
 
   output:
     sample_trimmed=expand( "05_Output/02_trimmomatic/{samples}_{ext}.trimmed.fastq", samples=SAMPLES, ext=["1","2"]),
-    #sample_untrimmed=expand( "05_Output/02_trimmomatic/{samples}_{ext}un.trimmed.fastq", samples=SAMPLES, ext=["1","2"])
+    sample_untrimmed=expand( "05_Output/02_trimmomatic/{samples}_{ext}un.trimmed.fastq", samples=SAMPLES, ext=["1","2"])
 
   conda: 
     "../02_Container/trimmomatic.yaml"
@@ -39,7 +39,6 @@ rule trimmomatic:
     len=${{#sample[@]}}
     for (( i=0; i<$len; i=i+2 ))
     do trimmomatic PE -threads 4 ${{sample[$i]}} ${{sample[$i+1]}} ${{sample_trimmed[$i]}} ${{sample_untrimmed[$i]}} ${{sample_trimmed[$i+1]}} ${{sample_untrimmed[$i+1]}} LEADING:20 TRAILING:15 SLIDINGWINDOW:4:15 MINLEN:36
-      rm ${{sample_untrimmed[$i]}}
     done
     """
 

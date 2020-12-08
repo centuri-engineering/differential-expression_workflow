@@ -115,19 +115,17 @@ coldata <- coldata_read[,-3]
 names(coldata)[names(coldata) == "project"] <- "samplename"
 gathered_topnorm <- inner_join(coldata, gathered_topnorm)
 
-cat(paste("These genes are selected with the padj-value obtened from the comparison ",mutant_level," vs ", ref_level,"\n", sep=""))
+cat(paste("\nWe plot the normalized count values for the top ",nbpval," differentially expressed genes (by padj values).\n",sep=""))
+
+cat(paste("\nThese genes are selected with the padj-value obtened from the comparison ",mutant_level," vs ", ref_level,"\n", sep=""))
 
 p=ggplot(gathered_topnorm) +
         geom_point(aes(x = Gene, y = normalized_counts, color = condition)) +
         scale_y_log10() +
         xlab("Genes") +
         ylab("Normalized Counts") +
-        ggtitle("Top 20 Significant DE Genes") +
+        ggtitle(paste("Top ", nbpval, " Significant DE Genes",sep="")) +
         theme_bw() +
 	theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
 	theme(plot.title = element_text(hjust = 0.5))
-plot(p)
-#ggsave("heatmap.pdf",
-#  plot = p,
-#  width = 11, height = 8
-#)
+ggplotly(p)

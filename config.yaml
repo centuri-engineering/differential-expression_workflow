@@ -35,6 +35,6 @@ diffexp:
     # Mutant to represent the gene with the top p-value
     mutant_level: "Mutant_1"
     # Number of genes to select with the best p-value
-    nbpval: 20
+    nbpval: 50
 
     
