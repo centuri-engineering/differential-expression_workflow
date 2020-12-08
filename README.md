@@ -21,7 +21,7 @@ Each snakemake rules call a specific conda environment. In this way you can easi
 
 ### Step 1: Install workflow
 
-You can use this workflow by downloading and extracting the latest release. If you intend to modify and further extend this workflow or want to work under version control, you can fork this repository.
+You can use this workflow by downloading and extracting the [latest release](https://zenodo.org/badge/latestdoi/292866143). If you intend to modify and further extend this workflow or want to work under version control, you can fork this repository.
 
 We would be pleased if you use this workflow and participate in its improvement. If you use it in a paper, don't forget to give credits to the author by citing the URL of this repository and, if available, its DOI (see above).
 
