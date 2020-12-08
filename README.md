@@ -37,8 +37,6 @@ You need [Docker](https://docs.docker.com/get-docker/) installed on your compute
 
 - Load the docker environment and run the workflow by using these commands:
 
-`docker build -t de_workflow /home/thomas/project/rattier/ibdm_rattier_rnaseq/`
-
 `docker build -t de_workflow yourpath/de_workflow`
 
 `docker run -it -v ${PWD}:/de_workflow de_workflow`
