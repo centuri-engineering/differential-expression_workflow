@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/292866143.svg)](https://zenodo.org/badge/latestdoi/292866143)
+
 # Differential Expression Workflow: RNA-seq analysis
 
 ## Author
