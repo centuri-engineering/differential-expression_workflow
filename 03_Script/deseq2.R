@@ -20,6 +20,8 @@ project=snakemake@params[["project"]]
 samples=snakemake@params[["samples"]]
 ref_level=snakemake@params[["ref_level"]]
 normalized_counts_file=snakemake@output[["normalized_counts_file"]]
+fpkm=snakemake@output[["fpkm"]]
+
 
 # Rename column name of the count matrix as coldata
 # colData and countData must have the same sample order
@@ -48,6 +50,7 @@ dds <- DESeqDataSetFromMatrix(countData = cts,
                               colData = coldata,
                               design = ~ condition)
 
+
 # Remove uninformative columns (to do when filter not already done with the CPM threshold)
 #dds <- dds[ rowSums(counts(dds)) > 10, ]
 
@@ -63,6 +66,14 @@ saveRDS(dds, file=snakemake@output[["rds"]])
 # Already done in the DESeq function
 #dds <- estimateSizeFactors( dds)
 
+# FPKM matrix
+gene_lengths <- read.delim(snakemake@input[["lengths"]], header=TRUE, comment.char="#", quote="",sep="\t")
+gene_lengths <- gene_lengths[match(rownames(mcols(dds, use.names=TRUE)), gene_lengths$Geneid),]
+mcols(dds)$basepairs <- gene_lengths[, "Length"]
+fpkm_df <- fpkm(dds)
+write.table(fpkm_df, file=fpkm, sep="\t", quote=F, col.names=NA)
+
 # Save the normalized data matrix
 normalized_counts <- counts(dds, normalized=TRUE)
 write.table(normalized_counts, file=normalized_counts_file, sep="\t", quote=F, col.names=NA)
+

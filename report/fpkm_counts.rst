@@ -1,0 +1,2 @@
+Fragments per kilobase of transcript per million mapped reads (FPKM) values for the genes passing the low genes filtration.
+This is use to compare the expression of genes inside the same sample (NOT between sample).

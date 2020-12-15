@@ -48,6 +48,8 @@ rule all:
     "05_Output/07_cpm/cpm_filtered.txt",
     "05_Output/08_deseq2_init/all.rds",
     "05_Output/08_deseq2_init/normalized_counts.tsv",
+    "05_Output/08_deseq2_init/fpkm_counts.tsv",
+    "05_Output/07_cpm/lengths.txt",
     "05_Output/09_differential_expression/diffexp.html",
     expand("05_Output/09_differential_expression/{condition.condition}_vs_{ref_level}_all_genes_stats.tsv",condition=condition.itertuples(),ref_level=ref_level),
     expand("05_Output/09_differential_expression/{condition.condition}_vs_{ref_level}_signif-up-regulated.txt", condition=condition.itertuples(), ref_level=ref_level),

@@ -14,6 +14,7 @@ file_list=list.files(snakemake@params[["path"]],pattern = "_count.txt$", full.na
 output_count=snakemake@output[["count_df"]]
 output_cpm=snakemake@output[["cpm"]]
 output_filter_count=snakemake@output[["output_filter_count"]]
+lengths_file=snakemake@output[["lengths"]]
 
 # Dataframe with the gene count for selected sample
 dataframe_total_count <- data.frame()
@@ -28,16 +29,23 @@ if(length(rmrun_list)!=0){
   }
 }
 
+
 gene_name <- read.delim(file_list[[1]], header=FALSE, comment.char="#", quote="")
 dataframe_total_count <- cbind(gene_name[,1])
+# Dataframe for the genelength
+gene_lengths <- cbind(gene_name[,1])
 for (i in 1:length(file_list)) {
   count <- read.delim(file_list[[i]], header=FALSE, comment.char="#", quote="")
   count[1,] <- lapply(count[1,], sub, pattern = ".*\\/.*\\/", replacement = "")
   dataframe_total_count <- cbind(dataframe_total_count, count[,7])
+  if (i == 1){
+    gene_lengths <- cbind(gene_lengths, count[,6])
+  }
 }
-
+colnames(gene_lengths) <- c("Geneid","Length")
 # write the dataframe with count value of each samples
 write.table(dataframe_total_count, file = output_count, sep="\t", quote = FALSE,row.names = FALSE, col.names = FALSE)
+write.table(gene_lengths, file = lengths_file, sep="\t", quote = FALSE,row.names = FALSE, col.names = FALSE)
 
 # Matrix transformation for cpm calculation
 mtx_total_count <- as.matrix(dataframe_total_count[-1,-1])

@@ -93,7 +93,8 @@ rule cpm_filtering:
   output:
     count_df = report("05_Output/07_cpm/count.txt", caption="../report/count.rst", category="02 Count matrices"),
     output_filter_count = report("05_Output/07_cpm/count_filtered.txt", caption="../report/count_filtered.rst", category="02 Count matrices"),
-    cpm = report("05_Output/07_cpm/cpm_filtered.txt", caption="../report/cpm_filtered.rst", category="02 Count matrices")
+    cpm = report("05_Output/07_cpm/cpm_filtered.txt", caption="../report/cpm_filtered.rst", category="02 Count matrices"),
+    lengths = "05_Output/07_cpm/lengths.txt"
 
   input:
     expand( "05_Output/06_featurecounts/{samples}_count.txt", samples=SAMPLES)
