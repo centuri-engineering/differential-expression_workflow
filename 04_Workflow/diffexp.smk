@@ -12,11 +12,13 @@ def get_deseq2_threads(wildcards=None):
 rule deseq2_init:
   input:
     cts = "05_Output/07_cpm/count_filtered.txt",
-    coldata = config["coldata"]
+    coldata = config["coldata"],
+    lengths = "05_Output/07_cpm/lengths.txt"
 
   output:
     rds = "05_Output/08_deseq2_init/all.rds",
-    normalized_counts_file = report("05_Output/08_deseq2_init/normalized_counts.tsv", caption="../report/normalized_counts.rst", category="02 Count matrices")
+    normalized_counts_file = report("05_Output/08_deseq2_init/normalized_counts.tsv", caption="../report/normalized_counts.rst", category="02 Count matrices"),
+    fpkm = report("05_Output/08_deseq2_init/fpkm_counts.tsv", caption="../report/fpkm_counts.rst", category="02 Count matrices")
   conda:
     "../02_Container/deseq2.yaml"
 
