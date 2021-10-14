@@ -5,8 +5,6 @@ Materials and methods
 
 We follow the data analysis procedure performed in Ghosh et al. (doi: 10.1016/j.compbiolchem.2020.107239). Version of tools and genomes have been updated and parameter used have been adapted according to our data.
 
-Because the library lib167668, lib167670 and lib167676 were sequenced in two run we concatenate the two resulting fastq file. Then we respect an equal deep of sequencing for the differential analyses between all the samples. 
-
 The quality of the raw reads were assessed using FastQC v0.11.9 toolkit (Andrews, 2010). Adapters and low quality reads were trimmed using Trimmomatic v0.39 (Bolger et al., 2014).
 
 HiSat2 v2.2.1 (Kim et al., 2015) was then used for mapping the raw reads to the reference genome GRCh38.p13 (Ensembl release 101). The expression for each gene were evaluated using featureCounts from the Subread v2.0.1 package (Liao et al., 2019) based on annotation from Ensembl release 101. 

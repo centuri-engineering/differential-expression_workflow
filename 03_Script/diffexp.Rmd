@@ -1,6 +1,6 @@
 ---
-title: "Epithelial integrity controls competency of hiPSCs into Primitive Streak by regulatoring TGF-b receptor accessibility"
-subtitle: "Bioinformatics project | IBDM | Rosana Dono & Diane Rattier"
+title: "Level of expression of Actin and Acting Binding Proteins in Saccharomyces cerevisiae cells"
+subtitle: "Bioinformatics project | IBDM | Micaela Boiero Sanders"
 author:
 - Thomas Vannier | CENTURI Multi-Engineering Platform
 date: "`r format(Sys.time(), '%d %B %Y')`"
@@ -35,7 +35,7 @@ library(EnhancedVolcano)
 ```
 
 [//]: # "Load the various chunks in the various files"
-```{r readChunks, echo=FALSE, warning=FALSE, message=FALSE}
+```{r readChunks, echo=FALSE, warning=TRUE, message=TRUE}
 read_chunk( path=file.path( SCRIPT_DIR, "data_quality.R"))
 read_chunk( path=file.path( SCRIPT_DIR, "diffexp.R"))
 ```
@@ -100,6 +100,8 @@ Points which fall out of the window are plotted as open triangles pointing
 either up or down. All genes are presented in the MA plots
 
 Volcanoplot representing the significance versus fold-change on the y and x axes.
+
+For each comparison we listed the target genes with differential expression 
 
 ```{r diffexp, echo=FALSE, fig.width=8, fig.height=9, results = "asis", message=FALSE, warning = FALSE}
 <<diffexp>>

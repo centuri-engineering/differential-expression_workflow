@@ -11,16 +11,13 @@ rld <- rlog(dds, blind=TRUE)
 
 # 50 genes with top and bottom loadings
 pcaobj <- prcomp(t(SummarizedExperiment::assay(rld)))
-hi_load <- hi_loadings(pcaobj, topN = 50, exprTable = log2(counts(dds, normalized=TRUE)) + 1)
+
+hi_load <- hi_loadings(pcaobj, topN = 50, exprTable = counts(dds, normalized=TRUE))
 
 df <- as.data.frame(colData(dds)[,c("condition","type")])
 
 pheatmap(hi_load, cluster_rows=FALSE, show_rownames=FALSE,
-         cluster_cols=FALSE, annotation_col=df, main="log2 values")
-#ggsave("heatmap.pdf",
-#  plot = p,
-#  width = 11, height = 8
-#)
+         cluster_cols=FALSE, annotation_col=df, main="values")
 
 ## @knitr heatmap-distance
 sampleDists <- dist(t(assay(rld)))
@@ -46,13 +43,18 @@ ggplot(df) + geom_point(aes(x=PC1, y=PC2, color=condition))
 ggplot(df) + geom_point(aes(x=PC3, y=PC4, color=condition))
 
 ## @knitr plot-gene
-gene_name=snakemake@params[["gene_name"]]
-
-d <- plotCounts(dds, gene=gene_name, intgroup="condition", returnData=TRUE)
-# Plotting the gene normalized counts, using the samplenames (rownames of d as labels)
-ggplot(d, aes(x = condition, y = count, color = condition)) + 
-  geom_point(position=position_jitter(w = 0.1,h = 0)) +
-  geom_text_repel(aes(label = rownames(d))) + 
-  theme_bw() +
-  ggtitle(gene_name) +
-  theme(plot.title = element_text(hjust = 0.5))
+gene_name_list = as.list(strsplit(snakemake@params[["gene_name"]], ",")[[1]])
+if(length(gene_name_list)!=0){
+  for (i in 1:length(gene_name_list)) {
+    gene_name=gene_name_list[[i]]
+    d <- plotCounts(dds, gene=gene_name, intgroup="condition", returnData=TRUE)
+    # Plotting the gene normalized counts, using the samplenames (rownames of d as labels)
+    ggplot=ggplot(d, aes(x = condition, y = count, color = condition)) + 
+    geom_point(position=position_jitter(w = 0.1,h = 0)) +
+    geom_text_repel(aes(label = rownames(d))) + 
+    theme_bw() +
+    ggtitle(gene_name_list[[i]]) +
+    theme(plot.title = element_text(hjust = 0.5))
+    plot(ggplot)
+  }
+}

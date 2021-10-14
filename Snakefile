@@ -18,42 +18,54 @@ validate(coldata, schema="06_Schemas/coldata.schema.yaml")
 condition = pd.read_table(config["condition"]).set_index(["condition"], drop=False)
 validate(coldata, schema="06_Schemas/condition.schema.yaml")
 
+##### Set variables ####
+ROOTDIR = os.getcwd()
+RAWDATA = srcdir("00_RawData/")
+REF = srcdir("01_Reference/")
+CONTAINER = srcdir("02_Container/")
+SCRIPTDIR = srcdir("03_Script/")
+ENVDIR = srcdir("04_Workflow/")
+OUTPUTDIR = srcdir("05_Output/")
+REPORT = srcdir("07_Report/")
+
 # ----------------------------------------------
 # Target rules
 # ----------------------------------------------
 SAMPLES = expand("{samples.project}_{samples.condition}_{samples.sample}",samples=samples.itertuples())
+RUN =  config["run"]["type"].split(',')
+EXT = config["run"]["ext"]
 ref_level = config["diffexp"]["ref_level"]
+genome = config["ref"]["genome"]
 index = config["ref"]["index"]
 annotation = config["ref"]["annotation"]
 RUN_ID = expand("{samples.project}_{samples.condition}_{samples.sample}",samples=samples.itertuples())
 
 rule all:
   input:
-    expand( "05_Output/02_trimmomatic/{samples}_{ext}.trimmed.fastq", samples=SAMPLES, ext=["1","2"]),
-    expand( "05_Output/02_trimmomatic/{samples}_{ext}un.trimmed.fastq", samples=SAMPLES, ext=["1","2"]),
-    expand( "05_Output/03_fastqc/{samples}_{ext}.trimmed_fastqc.html", samples=SAMPLES, ext=["1","2"]),
-    expand( "05_Output/03_fastqc/{samples}_{ext}.trimmed_fastqc.zip", samples=SAMPLES, ext=["1","2"]),
-    expand( "{index}.1.ht2", index=index),
-    expand( "{index}.2.ht2", index=index),
-    expand( "{index}.3.ht2", index=index),
-    expand( "{index}.4.ht2", index=index),
-    expand( "{index}.5.ht2", index=index),
-    expand( "{index}.6.ht2", index=index),
-    expand( "{index}.7.ht2", index=index),
-    expand( "{index}.8.ht2", index=index),
-    expand( "05_Output/05_hisat/{samples}.bam", samples=SAMPLES),
-    expand( "05_Output/06_featurecounts/{samples}_count.txt", samples=SAMPLES),
-    "05_Output/07_cpm/count.txt",
-    "05_Output/07_cpm/count_filtered.txt",
-    "05_Output/07_cpm/cpm_filtered.txt",
-    "05_Output/08_deseq2_init/all.rds",
-    "05_Output/08_deseq2_init/normalized_counts.tsv",
-    "05_Output/08_deseq2_init/fpkm_counts.tsv",
-    "05_Output/07_cpm/lengths.txt",
-    "05_Output/09_differential_expression/diffexp.html",
-    expand("05_Output/09_differential_expression/{condition.condition}_vs_{ref_level}_all_genes_stats.tsv",condition=condition.itertuples(),ref_level=ref_level),
-    expand("05_Output/09_differential_expression/{condition.condition}_vs_{ref_level}_signif-up-regulated.txt", condition=condition.itertuples(), ref_level=ref_level),
-    expand("05_Output/09_differential_expression/{condition.condition}_vs_{ref_level}_signif-down-regulated.txt", condition=condition.itertuples(), ref_level=ref_level)
+    expand( "05_Output/02_trimmomatic/{samples}_{run}.trimmed.fastq", samples=SAMPLES, run=RUN),
+    expand( "05_Output/02_trimmomatic/{samples}_{run}un.trimmed.fastq", samples=SAMPLES, run=RUN),
+    expand( "05_Output/03_fastqc/{samples}_{run}.trimmed_fastqc.html", samples=SAMPLES, run=RUN),
+    expand( "05_Output/03_fastqc/{samples}_{run}.trimmed_fastqc.zip", samples=SAMPLES, run=RUN),
+    OUTPUTDIR + "/03_fastqc/trimmed_multiqc.html",
+    index1 = expand( OUTPUTDIR + "{index}.1.ht2", index=index),
+    index2 = expand( OUTPUTDIR + "{index}.2.ht2", index=index),
+    index3 = expand( OUTPUTDIR + "{index}.3.ht2", index=index),
+    index4 = expand( OUTPUTDIR + "{index}.4.ht2", index=index),
+    index5 = expand( OUTPUTDIR + "{index}.5.ht2", index=index),
+    index6 = expand( OUTPUTDIR + "{index}.6.ht2", index=index),
+    index7 = expand( OUTPUTDIR + "{index}.7.ht2", index=index),
+    index8 = expand( OUTPUTDIR + "{index}.8.ht2", index=index),
+    bam = expand( OUTPUTDIR + "05_hisat/{samples}.bam", samples=SAMPLES),
+    countmatrices = expand( OUTPUTDIR + "06_featurecounts/{samples}_count.txt", samples=SAMPLES),
+    count_df = OUTPUTDIR + "07_cpm/count.txt",
+    output_filter_count = OUTPUTDIR + "07_cpm/count_filtered.txt",
+    cpm = OUTPUTDIR + "07_cpm/cpm_filtered.txt",
+    rds = "05_Output/08_deseq2_init/all.rds",
+    normalized_counts_file = "05_Output/08_deseq2_init/normalized_counts.tsv",
+    table=expand(OUTPUTDIR + "09_differential_expression/{condition.condition}_vs_{ref_level}_all_genes_stats.tsv", condition=condition.itertuples(), ref_level=ref_level),
+    sur=expand(OUTPUTDIR + "09_differential_expression/{condition.condition}_vs_{ref_level}_signif-up-regulated.txt", condition=condition.itertuples(), ref_level=ref_level),
+    sdr=expand(OUTPUTDIR + "09_differential_expression/{condition.condition}_vs_{ref_level}_signif-down-regulated.txt", condition=condition.itertuples(), ref_level=ref_level),
+    html_report = OUTPUTDIR + "09_differential_expression/diffexp.html",
 
 # ----------------------------------------------
 # setup singularity 
@@ -69,7 +81,6 @@ rule all:
 
 report: "report/workflow.rst"
 
-
 # ----------------------------------------------
 # Impose rule order for the execution of the workflow 
 # ----------------------------------------------
@@ -80,6 +91,6 @@ ruleorder: trimmomatic > fastqc_trimmed > hisat_build > hisat > featureCounts > 
 # Load rules 
 # ----------------------------------------------
 
-include: "04_Workflow/clean.smk"
-include: "04_Workflow/count.smk"
-include: "04_Workflow/diffexp.smk"
+include: ENVDIR + "clean.smk"
+include: ENVDIR + "count.smk"
+include: ENVDIR + "diffexp.smk"

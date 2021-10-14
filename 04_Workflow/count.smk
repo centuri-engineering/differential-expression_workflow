@@ -1,32 +1,37 @@
 SAMPLES = expand("{samples.project}_{samples.condition}_{samples.sample}",samples=samples.itertuples())
 
-index = config["ref"]["index"]
-annotation = config["ref"]["annotation"]
-
 # ----------------------------------------------
 # HISAT2-build: Indexing a reference genome
 # ----------------------------------------------
 rule hisat_build:
   output:
-    expand( "{index}.1.ht2", index=index),
-    expand( "{index}.2.ht2", index=index),
-    expand( "{index}.3.ht2", index=index),
-    expand( "{index}.4.ht2", index=index),
-    expand( "{index}.5.ht2", index=index),
-    expand( "{index}.6.ht2", index=index),
-    expand( "{index}.7.ht2", index=index),
-    expand( "{index}.8.ht2", index=index)
+    expand( OUTPUTDIR + "{index}.1.ht2", index=index),
+    expand( OUTPUTDIR + "{index}.2.ht2", index=index),
+    expand( OUTPUTDIR + "{index}.3.ht2", index=index),
+    expand( OUTPUTDIR + "{index}.4.ht2", index=index),
+    expand( OUTPUTDIR + "{index}.5.ht2", index=index),
+    expand( OUTPUTDIR + "{index}.6.ht2", index=index),
+    expand( OUTPUTDIR + "{index}.7.ht2", index=index),
+    expand( OUTPUTDIR + "{index}.8.ht2", index=index)
 
   input:
-    config["ref"]["genome"]
+    ref = REF + config["ref"]["genome"]
+
+  params:
+    index = OUTPUTDIR + config["ref"]["index"]
 
   conda: 
-    "../02_Container/hisat2.yaml"
+    CONTAINER + "hisat2.yaml"
 
   shell:
     """
-    index=({config.ref.index})
-    "hisat2-build {input} ${{index}}"
+    input={input.ref}
+    output={params.index}
+    if [ ${{input}} == '*.gz' ];then
+      gunzip ${{input}}
+      input="${{input%.*}}"
+    fi
+    hisat2-build ${{input}} ${{output}}
     """
 
 # ----------------------------------------------
@@ -34,30 +39,44 @@ rule hisat_build:
 # ----------------------------------------------
 rule hisat:
   output:
-    bam = expand( "05_Output/05_hisat/{samples}.bam", samples=SAMPLES)
+    bam = expand( OUTPUTDIR + "05_hisat/{samples}.bam", samples=SAMPLES)
     
   input:
-    fastq1 = expand( "05_Output/02_trimmomatic/{samples}_1.trimmed.fastq", samples=SAMPLES),
-    fastq2 = expand( "05_Output/02_trimmomatic/{samples}_2.trimmed.fastq", samples=SAMPLES)
+    sample_trimmed=expand( OUTPUTDIR + "02_trimmomatic/{samples}_{run}.trimmed.fastq", samples=SAMPLES, run=RUN)
 
   conda: 
-    "../02_Container/hisat2.yaml"
+    CONTAINER + "hisat2.yaml"
 
   params:
-    sam = expand( "05_Output/05_hisat/{samples}.sam", samples=SAMPLES)
+    sam = expand( OUTPUTDIR + "05_hisat/{samples}.sam", samples=SAMPLES),
+    reads = config["run"]["reads"],
+    index = OUTPUTDIR + config["ref"]["index"]
 
   shell:
     """
-    fastq1=({input.fastq1})
-    fastq2=({input.fastq2})
+    index={params.index}
+    sample_trimmed=({input.sample_trimmed})
+    len=${{#sample_trimmed[@]}}
+    reads=({params.reads})
     sam=({params.sam})
     bam=({output.bam})
-    len=${{#fastq1[@]}}
-    for (( i=0; i<$len; i++ ))
-      do hisat2 -p 12 -x {index} -1 ${{fastq1[$i]}} -2 ${{fastq2[$i]}} -S ${{sam[$i]}}
-        samtools sort ${{sam[$i]}} > ${{bam[$i]}}
-        rm ${{sam[$i]}}
-    done
+    flag=0
+    if [ ${{reads}} == 'paired' ];then
+      for (( i=0; i<$len; i=i+2 ))
+        do hisat2 -p 12 -x ${{index}} -1 ${{sample_trimmed[$i]}} -2 ${{sample_trimmed[$i+1]}} -S ${{sam[$flag]}}
+          samtools sort ${{sam[$flag]}} > ${{bam[$flag]}}
+          rm ${{sam[$flag]}}
+          flag=$((${{flag}}+1))
+      done
+    elif [ ${{reads}} == 'unpaired' ];then
+      for (( i=0; i<$len; i++ ))
+        do hisat2 -p 12 -x ${{index}} -U ${{sample_trimmed[$i]}} -S ${{sam[$i]}}
+          samtools sort ${{sam[$i]}} > ${{bam[$i]}}
+          rm ${{sam[$i]}}
+      done
+    else
+      echo "Your fastq files have to be paired or unpaired. Please check the config.yaml"
+    fi
     """
 
 # ----------------------------------------------
@@ -66,23 +85,36 @@ rule hisat:
 
 rule featureCounts:
   output:
-    count = expand( "05_Output/06_featurecounts/{samples}_count.txt", samples=SAMPLES)
+    countmatrices = expand( OUTPUTDIR + "06_featurecounts/{samples}_count.txt", samples=SAMPLES)
     
   input:
-    {annotation},
-    bam = expand( "05_Output/05_hisat/{samples}.bam", samples=SAMPLES)
+    annotation = REF + config["ref"]["annotation"],
+    bam = expand( OUTPUTDIR + "05_hisat/{samples}.bam", samples=SAMPLES)
 
   conda: 
-    "../02_Container/featureCounts.yaml"
+    CONTAINER + "featureCounts.yaml"
+
+  params:
+    reads = config["run"]["reads"],
+    geneid = config["ref"]["geneid"]
 
   shell:
     """
+    reads=({params.reads})
+    geneid=({params.geneid})
+    annotation={input.annotation}
     bam=({input.bam})
-    count=({output.count})
+    countmatrices=({output.countmatrices})
     len=${{#bam[@]}}
-    for (( i=0; i<$len; i++ ))
-      do featureCounts -T 12 -p -t exon -g gene_id -a {annotation} -o ${{count[$i]}} ${{bam[$i]}}
-    done
+    if [ ${{reads}} == 'paired' ];then
+      for (( i=0; i<$len; i++ ))
+        do featureCounts -T 12 -p -t exon -g ${{geneid}} -a ${{annotation}} -o ${{countmatrices[$i]}} ${{bam[$i]}}
+      done
+    elif [ ${{reads}} == 'unpaired' ];then
+      for (( i=0; i<$len; i++ ))
+        do featureCounts -T 12 -t exon -g ${{geneid}} -a ${{annotation}} -o ${{countmatrices[$i]}} ${{bam[$i]}}
+      done
+    fi
     """
 
 # ----------------------------------------------
@@ -91,22 +123,21 @@ rule featureCounts:
 
 rule cpm_filtering:
   output:
-    count_df = report("05_Output/07_cpm/count.txt", caption="../report/count.rst", category="02 Count matrices"),
-    output_filter_count = report("05_Output/07_cpm/count_filtered.txt", caption="../report/count_filtered.rst", category="02 Count matrices"),
-    cpm = report("05_Output/07_cpm/cpm_filtered.txt", caption="../report/cpm_filtered.rst", category="02 Count matrices"),
-    lengths = "05_Output/07_cpm/lengths.txt"
+    count_df = report(OUTPUTDIR + "07_cpm/count.txt", caption="../report/count.rst", category="02 Count matrices"),
+    output_filter_count = report(OUTPUTDIR + "07_cpm/count_filtered.txt", caption="../report/count_filtered.rst", category="02 Count matrices"),
+    cpm = report(OUTPUTDIR + "07_cpm/cpm_filtered.txt", caption="../report/cpm_filtered.rst", category="02 Count matrices")
 
   input:
-    expand( "05_Output/06_featurecounts/{samples}_count.txt", samples=SAMPLES)
+    expand( OUTPUTDIR + "06_featurecounts/{samples}_count.txt", samples=SAMPLES)
     
   params:
     thresh_cpm = config["filtering"]["thresh_cpm"],
     thresh_sample = config["filtering"]["thresh_sample"],
     rmrun_list = config["filtering"]["rmrun"],
-    path = "05_Output/06_featurecounts"
+    path = OUTPUTDIR + "06_featurecounts"
 
   conda: 
-    "../02_Container/cpm.yaml"
+    CONTAINER + "cpm.yaml"
 
   script:
-    "../03_Script/cpm_filtering.R"
+    SCRIPTDIR + "cpm_filtering.R"

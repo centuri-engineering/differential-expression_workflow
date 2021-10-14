@@ -23,11 +23,9 @@ for (i in 1:length(comparison_df)) {
     write.table(as.data.frame(rlog_results), file= paste("../05_Output/09_differential_expression/",outputname,"_all_genes_stats.tsv", sep=""), quote = FALSE, sep = "\t")
 
     ## MA-plot
-    #pdf(file = paste("../05_Output/Figue/",outputname,"_maplot.pdf"), width = 8, height = 9, pointsize = 10)
     xlim <- c(500,5000); ylim <- c(-2,2)
     plotMA(rlog_results, xlim=xlim, ylim=ylim, main=comparison_df[[i]])
     idx <- identify(rlog_results$baseMean, rlog_results$log2FoldChange)
-    #dev.off()
 
     ## Volcano plot
     FC <- 0.584963
@@ -60,7 +58,7 @@ for (i in 1:length(comparison_df)) {
     lab = rownames(rlog_results),
     x = 'log2FoldChange',
     y = "padj",
-    xlim = c(-6,6),
+    xlim = c(-12,12),
     xlab = bquote(~Log[2]~ 'fold change'),
     ylab = bquote(~-Log[10]~adjusted~italic(P)),
     title = "",
@@ -85,7 +83,24 @@ for (i in 1:length(comparison_df)) {
     borderWidth = 0.7,
     borderColour = 'black')    
     plot(volcanoplot_padj)
- }
+    # Tell if the list of interest genes have differential expression 
+    if(length(gene_name_list)!=0){
+        for (i in 1:length(gene_name_list)) {
+            # adjusted p-value can be NA (>1) so condition doesn't work
+            gene_name=gene_name_list[[i]]
+            foldc = rlog_results[which(row.names(rlog_results) == gene_name),"log2FoldChange"]
+            pval = rlog_results[which(row.names(rlog_results) == gene_name),"padj"]
+            if (!is.na(pval)){
+                if ((foldc < -FC) && (pval < p)) {
+                    cat(paste("\n",gene_name," is differentially expressed (significantly down regulated).\n",sep=""))
+                }
+                if ((foldc > FC) && (pval < p)) {
+                    cat(paste("\n",gene_name," is differentially expressed (significantly up regulated).\n",sep=""))
+                }
+            }
+        }
+    }
+}
 
 ## @knitr toppadj
 
@@ -99,6 +114,7 @@ top_adjpval <- mutant_level_file[1:nbpval,1]
 # Keep the normalized count values of these genes
 dds <- readRDS(RDS)
 normalized_counts <- as.data.frame(counts(dds, normalized=TRUE))
+
 normalized_counts <- rownames_to_column(normalized_counts, "Gene")
 topnorm <- data.frame()
 for (i in 1:nrow(top_adjpval)){
