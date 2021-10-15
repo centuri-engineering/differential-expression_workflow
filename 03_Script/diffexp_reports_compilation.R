@@ -3,7 +3,7 @@
 # independently of Rstudio interface
 # ##########################################################################
 
-WORKING_DIR = "/de_workflow"
+WORKING_DIR = getwd()
 
 STEP = "09_differential_expression"
 

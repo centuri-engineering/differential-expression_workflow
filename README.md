@@ -1,5 +1,3 @@
-[![DOI](https://zenodo.org/badge/292866143.svg)](https://zenodo.org/badge/latestdoi/292866143)
-
 # Differential Expression Workflow: RNA-seq analysis
 
 ## Author
@@ -8,8 +6,10 @@ Thomas Vannier (@metavannier), https://centuri-livingsystems.org/t-vannier/
 
 ## About
 
-This workflow performs an RNA-seq analysis from the sequencing output data to the differential expression analyses. 
-It run into a docker container (see Dockerfile) including a general conda environment (see envfair.yaml).
+This workflow performs an RNA-seq analysis from the sequencing output data to the differential expression analyses.
+
+You need to install [Singularity](https://github.com/hpcng/singularity/blob/master/INSTALL.md#install-golang) on your computer. This workflow also work in a slurm environment.
+
 Each snakemake rules call a specific conda environment. In this way you can easily change/add tools for each step if necessary. 
 
 3 steps for the analysis:
@@ -21,32 +21,29 @@ Each snakemake rules call a specific conda environment. In this way you can easi
 
 ### Step 1: Install workflow
 
-You can use this workflow by downloading and extracting the [latest release](https://zenodo.org/badge/latestdoi/292866143). If you intend to modify and further extend this workflow or want to work under version control, you can fork this repository.
+You can use this workflow by downloading and extracting the latest release. If you intend to modify and further extend this workflow or want to work under version control, you can fork this repository.
 
 We would be pleased if you use this workflow and participate in its improvement. If you use it in a paper, don't forget to give credits to the author by citing the URL of this repository and, if available, its DOI (see above).
 
 ### Step 2: Configure workflow
 
 Configure the workflow according to your needs via editing the files and repositories:
-- 00_RawData need the pair-end fastq file of each run to analyse
+- 00_RawData need the single or pair-end fastq file of each run to analyse
 - 01_Reference the fasta file and gff/gtf of your reference genome for the mapping step
 - [sample.tsv](/sample.tsv), [coldata.tsv](/coldata.tsv) and [condition.tsv](/condition.tsv) to indicate the samples, run, condition, etc. for the analyse.
 - [config.yaml](/config.yaml) indicating the parameters to use.
 
 ### Step 3: Execute workflow
 
-You need [Docker](https://docs.docker.com/get-docker/) installed on your computer.
+- You need [Singularity v3.5.3](https://github.com/hpcng/singularity/blob/master/INSTALL.md#install-golang) installed on your computer or cluster.
 
-- Load the docker environment and run the workflow by using these commands:
+- Load snakemake from a docker container and run the workflow from the root by using these commands:
 
-`docker build -t de_workflow yourpath/de_workflow`
-
-`docker run -it -v ${PWD}:/de_workflow de_workflow`
+`singularity run docker://snakemake/snakemake:v6.3.0`
 
 - Then execute the workflow locally via
-`cd de_workflow/`
 
-`snakemake --use-conda -R`
+`snakemake  --use-conda --use-singularity --cores 10`
 
 ### Step 4: Investigate results 
 

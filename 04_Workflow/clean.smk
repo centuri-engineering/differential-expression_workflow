@@ -1,35 +1,38 @@
 SAMPLES = expand("{samples.project}_{samples.condition}_{samples.sample}",samples=samples.itertuples())
+RUN =  config["run"]["type"].split(',')
+EXT = config["run"]["ext"]
 
 # ----------------------------------------------
 # FastQC to check the reads quality
 # ----------------------------------------------
-# rule fastqc:
-#   output:
-#     expand( "05_Output/01_fastqc/{samples}_{ext}_fastqc.html", samples=SAMPLES, ext=["1","2"]),
-#     expand( "05_Output/01_fastqc/{samples}_{ext}_fastqc.zip", samples=SAMPLES, ext=["1","2"])
+rule fastqc:
+  output:
+    expand( "05_Output/01_fastqc/{samples}_{run}_fastqc.html", samples=SAMPLES, run=RUN),
+    expand( "05_Output/01_fastqc/{samples}_{run}_fastqc.zip", samples=SAMPLES, run=RUN)
 
-#   input:
-#     expand( "00_RawData/{samples}_{ext}.fastq", samples=SAMPLES, ext=["1","2"])
+  input:
+    expand( "00_RawData/{samples}_{run}.{ext}", samples=SAMPLES, run=RUN, ext=EXT)
 
-#   conda: 
-#     "../02_Container/fastqc.yaml"
+  conda: 
+    CONTAINER + "fastqc.yaml"
 
-#   shell:
-#     "fastqc --outdir 05_Output/01_fastqc/ {input}"
+  shell:
+    "fastqc --outdir 05_Output/01_fastqc/ {input}"
 
 # ----------------------------------------------
 # Trimmomatic: trimming reads and removing adapter sequences
 # ----------------------------------------------
+
 rule trimmomatic:
   input:
-    sample=expand("00_RawData/{samples}_{ext}.fastq", samples=SAMPLES, ext=["1","2"])
+    sample=expand("00_RawData/{samples}_{run}.{ext}", samples=SAMPLES, run=RUN, ext=EXT)
 
   output:
-    sample_trimmed=expand( "05_Output/02_trimmomatic/{samples}_{ext}.trimmed.fastq", samples=SAMPLES, ext=["1","2"]),
-    sample_untrimmed=expand( "05_Output/02_trimmomatic/{samples}_{ext}un.trimmed.fastq", samples=SAMPLES, ext=["1","2"])
+    sample_trimmed=expand( "05_Output/02_trimmomatic/{samples}_{run}.trimmed.fastq", samples=SAMPLES, run=RUN),
+    sample_untrimmed=expand( "05_Output/02_trimmomatic/{samples}_{run}un.trimmed.fastq", samples=SAMPLES, run=RUN)
 
   conda: 
-    "../02_Container/trimmomatic.yaml"
+    CONTAINER + "trimmomatic.yaml"
 
   shell:
     """
@@ -47,14 +50,33 @@ rule trimmomatic:
 # ----------------------------------------------
 rule fastqc_trimmed:
   output:
-    report(expand( "05_Output/03_fastqc/{samples}_{ext}.trimmed_fastqc.html", samples=SAMPLES, ext=["1","2"]), caption="../report/fastqc.rst", category="01 Row data quality"),
-    expand( "05_Output/03_fastqc/{samples}_{ext}.trimmed_fastqc.zip", samples=SAMPLES, ext=["1","2"])
+    expand( "05_Output/03_fastqc/{samples}_{run}.trimmed_fastqc.html", samples=SAMPLES, run=RUN),
+    expand( "05_Output/03_fastqc/{samples}_{run}.trimmed_fastqc.zip", samples=SAMPLES, run=RUN)
 
   input:
-    expand( "05_Output/02_trimmomatic/{samples}_{ext}.trimmed.fastq", samples=SAMPLES, ext=["1","2"])
+    expand( "05_Output/02_trimmomatic/{samples}_{run}.trimmed.fastq", samples=SAMPLES, run=RUN)
 
   conda: 
-    "../02_Container/fastqc.yaml"
+    CONTAINER + "fastqc.yaml"
 
   shell:
     "fastqc --outdir 05_Output/03_fastqc/ {input}"
+
+# ----------------------------------------------
+# MultiQC to check the reads trimmed quality
+# ----------------------------------------------
+
+rule multiqc_trimmed:
+  input:
+    trim_qc = expand( "05_Output/03_fastqc/{samples}_{run}.trimmed_fastqc.zip", samples=SAMPLES, run=RUN)
+  output:
+    trim_multi_html = report(OUTPUTDIR + "/03_fastqc/trimmed_multiqc.html", caption = ROOTDIR + "/report/multiqc.rst", category="01 quality report"), 
+  params:
+    multiqc_output_trim = OUTPUTDIR + "/03_fastqc/trimmed_multiqc_data"
+  conda:
+    CONTAINER + "multiqc.yaml"
+  shell: 
+    """
+    multiqc -n {output.trim_multi_html} {input.trim_qc} --force #run multiqc
+    rm -rf {params.multiqc_output_trim} #clean-up
+    """
