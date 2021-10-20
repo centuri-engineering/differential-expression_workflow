@@ -58,11 +58,20 @@ properties:
         type: string
       gene_name:
         type: string
+      mutant_level:
+        type: string
+      nbpval:
+        type: integer
+      # pCutoff:
+      #   type: double
+      # FCcutoff:
+      #   type: integer
     required:
       - ref_level
       - lfcshrink_type
       - gene_name
-
+      - mutant_level
+      - nbpval
   required:
     - samples
     - coldata

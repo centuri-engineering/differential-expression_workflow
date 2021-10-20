@@ -48,5 +48,9 @@ diffexp:
     mutant_level: "Sc_Ca"
     # Number of genes to select with the best p-value
     nbpval: 50
+    # qvalue threshold
+    pCutoff: 0.01
+    # Foldchange threshold
+    FCcutoff: 1.5
 
     
