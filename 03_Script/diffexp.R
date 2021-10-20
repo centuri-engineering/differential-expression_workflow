@@ -28,8 +28,18 @@ for (i in 1:length(comparison_df)) {
     idx <- identify(rlog_results$baseMean, rlog_results$log2FoldChange)
 
     ## Volcano plot
-    FC <- 0.584963
-    p <- 10e-3
+    FC <- log2(FCcutoff)
+    p <- pCutoff
+
+    # Red point in front of the other to visualize marker genes
+    # if(length(gene_name_list)!=0){
+    #     for (i in 1:length(gene_name_list)) {
+    #         gene_name=gene_name_list[[i]]
+    #         line <- rlog_results[match(gene_name, table = rownames(rlog_results)), ]
+    #         rlog_results <- rlog_results[-match(gene_name, table = rownames(rlog_results)), ]
+    #         rlog_results <- rbind(rlog_results,line)
+    #     }
+    # }
 
     keyvals <- rep('grey75', nrow(rlog_results))
     names(keyvals) <- rep('NS', nrow(rlog_results))
@@ -50,6 +60,18 @@ for (i in 1:length(comparison_df)) {
     sur <- subset(rlog_results, (rlog_results$log2FoldChange > FC) & (rlog_results$padj < p))
     write.table(as.data.frame(sur), file= paste("../05_Output/09_differential_expression/",outputname,"_signif-up-regulated.txt", sep=""), quote = FALSE, sep = "\t")
 
+    # If you want inlight the marker genes
+    # if(length(gene_name_list)!=0){
+    #     for (i in 1:length(gene_name_list)) {
+    #         gene_name=gene_name_list[[i]]
+    #         keyvals[which(row.names(rlog_results) == gene_name)] <- 'red2'
+    #         names(keyvals)[which(row.names(rlog_results) == gene_name)] <- 'MarkerGenes'
+
+    #         # keyvals.shape[which(row.names(rlog_results) == gene_name)] <- 16
+    #         # names(keyvals.shape)[which(row.names(rlog_results) == gene_name)] <- 'MarkerGenes'
+    #     }
+    # }
+
     unique(keyvals)
     unique(names(keyvals))
 
@@ -65,11 +87,12 @@ for (i in 1:length(comparison_df)) {
     subtitle = "",
     axisLabSize = 12,
     titleLabSize = 15,
-    pCutoff = 10e-3,
-    FCcutoff = 0.6,
+    pCutoff = p,
+    FCcutoff = FC,
     pointSize = 1.5,
     labSize = 2,
     colCustom = keyvals,
+    # shapeCustom = keyvals.shape,
     colAlpha = 1,
     legendPosition = 'bottom',
     legendLabSize = 10,
@@ -81,8 +104,12 @@ for (i in 1:length(comparison_df)) {
     gridlines.minor = FALSE,
     border = 'full',
     borderWidth = 0.7,
-    borderColour = 'black')    
+    borderColour = 'black')
     plot(volcanoplot_padj)
+    ## To have volcanoplot in pdf
+    # pdf(paste("../05_Output/09_differential_expression/",outputname,"_volcano.pdf", sep=""))
+    # print(volcanoplot_padj)
+    # dev.off()
     # Tell if the list of interest genes have differential expression 
     if(length(gene_name_list)!=0){
         for (i in 1:length(gene_name_list)) {

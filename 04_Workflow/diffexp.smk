@@ -52,6 +52,8 @@ rule diffexp:
     gene_name = config["diffexp"]["gene_name"],
     mutant_level = config["diffexp"]["mutant_level"],
     nbpval = config["diffexp"]["nbpval"],
+    FCcutoff=config["diffexp"]["FCcutoff"],
+    pCutoff=config["diffexp"]["pCutoff"],
   message: 
     "Run the differential expression analyses"  
   script:
