@@ -5,19 +5,23 @@ condition: condition.tsv
 
 run:
     # Can be a list if pair-end : "R1,R2" or "1,2"
-    type: "1"
+    type: "R1,R2"
     # paired or unpaired fastq file
-    reads: "unpaired"
+    reads: "paired"
     # Extension for the input fastq file
     ext: "fastq.gz"
 
+clean:
+    # File to remove adapters with trimmomatic
+    illuminaclip: "01_Reference/NexteraPE-PE.fa"
+
 ref:
     # Reference Genome (must be unziped)
-    genome: "GCF_000146045.2_R64_genomic.fna"
+    genome: "GCF_000001215.4_Release_6_plus_ISO1_MT_genomic.fna"
     # The Hisat index
-    index: "04_index/R64"
+    index: "04_index/drosophila"
     # gtf file with transcripts
-    annotation: "GCF_000146045.2_R64_genomic.gtf"
+    annotation: "GCF_000001215.4_Release_6_plus_ISO1_MT_genomic.gtf"
     # Gene id for the figures
     geneid: "gene_id"
 
@@ -39,13 +43,13 @@ pca:
 
 diffexp:
     # Reference to do the comparison
-    ref_level: "ScNI"
+    ref_level: "Dorsalized"
     # Shrinkage estimator for ranking and visualization (apeglm, normal or ashr)
     lfcshrink_type: "apeglm"
     # Gene name to see the expression between the condition (can be a list of genes)
-    gene_name: "YOR122C,YLL050C,YOR181W,YDL029W,YJR065C,YKL007W,YIL034C,YNL079C,YIL138C,YNL271C,YIL159W,YDR129C,YMR092C,YGR080W,YNL138W,YLR429W,YIL062C,YLR370C,YKL013C,YNR035C,YBR234C,YCR088W,YHR023W,YKL129C,YMR109W,YIR006C,YDR063W,YLR319C,YPL242C,YOR239W,YOR326W,YAL029C,YFL039C,Sc[Ca],Sc[Sp],Sc[At],N2,Ca"
+    gene_name: "Dmel_CR40469,Dmel_CG3620,Dmel_CG4041"
     # Mutant to represent the gene with the top p-value
-    mutant_level: "Sc_Ca"
+    mutant_level: "Ventralized"
     # Number of genes to select with the best p-value
     nbpval: 50
     # qvalue threshold

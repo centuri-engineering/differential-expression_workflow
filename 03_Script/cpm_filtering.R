@@ -11,9 +11,9 @@ library(edgeR)
 
 # Browse the list of file count to produce a matrix
 file_list=list.files(snakemake@params[["path"]],pattern = "_count.txt$", full.names=TRUE)
-output_count=snakemake@output[["count_df"]]
-output_cpm=snakemake@output[["cpm"]]
-output_filter_count=snakemake@output[["output_filter_count"]]
+output_count=snakemake@params[["count_df"]]
+output_cpm=snakemake@params[["cpm"]]
+output_filter_count=snakemake@params[["output_filter_count"]]
 
 # Dataframe with the gene count for selected sample
 dataframe_total_count <- data.frame()
@@ -80,4 +80,6 @@ for (i in 1:nrow(df_cpm_filter)) {
 # Matrix transformation for cpm calculation
 write.table(dataframe_filtered_count, file = output_filter_count, quote = FALSE, row.names = FALSE, col.names = FALSE)
 
-
+# Writing on the snakemake outputfile
+cpm_filtering_output=snakemake@output[["cpm_filtering_output"]]
+writeLines(c("cpm filtering step done"), cpm_filtering_output)

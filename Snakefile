@@ -1,11 +1,12 @@
+# Docker container based on a minimal Ubuntu installation that includes conda-forge's mambaforge installer.
+# container: "docker://condaforge/mambaforge"
+
 import pandas as pd
 from snakemake.utils import validate, min_version
 ##### set minimum snakemake version #####
 min_version("5.1.2")
 
-
 ##### load config and sample sheets #####
-
 configfile: "config.yaml"
 validate(config, schema="06_Schemas/config.schema.yaml")
 
@@ -42,11 +43,10 @@ RUN_ID = expand("{samples.project}_{samples.condition}_{samples.sample}",samples
 
 rule all:
   input:
-    expand( "05_Output/02_trimmomatic/{samples}_{run}.trimmed.fastq", samples=SAMPLES, run=RUN),
-    expand( "05_Output/02_trimmomatic/{samples}_{run}un.trimmed.fastq", samples=SAMPLES, run=RUN),
-    expand( "05_Output/03_fastqc/{samples}_{run}.trimmed_fastqc.html", samples=SAMPLES, run=RUN),
-    expand( "05_Output/03_fastqc/{samples}_{run}.trimmed_fastqc.zip", samples=SAMPLES, run=RUN),
-    OUTPUTDIR + "/03_fastqc/trimmed_multiqc.html",
+    fastqc_output="05_Output/01_fastqc/fastqc_output.txt",
+    trimmomatic_output= OUTPUTDIR + "02_trimmomatic/trimmomatic_output.txt",
+    fastqc_trimmed_output= OUTPUTDIR + "03_fastqc/fastqc_trimmed_output.txt",
+    multiqc_trimmed_output = OUTPUTDIR + "03_fastqc/trimmed_multiqc.txt",
     index1 = expand( OUTPUTDIR + "{index}.1.ht2", index=index),
     index2 = expand( OUTPUTDIR + "{index}.2.ht2", index=index),
     index3 = expand( OUTPUTDIR + "{index}.3.ht2", index=index),
@@ -55,17 +55,11 @@ rule all:
     index6 = expand( OUTPUTDIR + "{index}.6.ht2", index=index),
     index7 = expand( OUTPUTDIR + "{index}.7.ht2", index=index),
     index8 = expand( OUTPUTDIR + "{index}.8.ht2", index=index),
-    bam = expand( OUTPUTDIR + "05_hisat/{samples}.bam", samples=SAMPLES),
-    countmatrices = expand( OUTPUTDIR + "06_featurecounts/{samples}_count.txt", samples=SAMPLES),
-    count_df = OUTPUTDIR + "07_cpm/count.txt",
-    output_filter_count = OUTPUTDIR + "07_cpm/count_filtered.txt",
-    cpm = OUTPUTDIR + "07_cpm/cpm_filtered.txt",
-    rds = "05_Output/08_deseq2_init/all.rds",
-    normalized_counts_file = "05_Output/08_deseq2_init/normalized_counts.tsv",
-    table=expand(OUTPUTDIR + "09_differential_expression/{condition.condition}_vs_{ref_level}_all_genes_stats.tsv", condition=condition.itertuples(), ref_level=ref_level),
-    sur=expand(OUTPUTDIR + "09_differential_expression/{condition.condition}_vs_{ref_level}_signif-up-regulated.txt", condition=condition.itertuples(), ref_level=ref_level),
-    sdr=expand(OUTPUTDIR + "09_differential_expression/{condition.condition}_vs_{ref_level}_signif-down-regulated.txt", condition=condition.itertuples(), ref_level=ref_level),
-    html_report = OUTPUTDIR + "09_differential_expression/diffexp.html",
+    hisat_output=OUTPUTDIR + "05_hisat/hisat.txt",
+    featureCounts_output = OUTPUTDIR + "06_featurecounts/featurecounts.txt",
+    cpm_filtering_output = OUTPUTDIR + "07_cpm/cpm_filtering.txt",
+    deseq2_init_output = OUTPUTDIR + "08_deseq2_init/deseq2_init.txt",
+    diffexp_output = OUTPUTDIR + "09_differential_expression/diffexp.txt"
 
 # ----------------------------------------------
 # setup singularity 
@@ -85,7 +79,7 @@ report: "report/workflow.rst"
 # Impose rule order for the execution of the workflow 
 # ----------------------------------------------
 
-ruleorder: trimmomatic > fastqc_trimmed > hisat_build > hisat > featureCounts > cpm_filtering > deseq2_init > diffexp
+# ruleorder: trimmomatic > fastqc_trimmed > hisat_build > hisat > featureCounts > cpm_filtering > deseq2_init > diffexp
 
 # ----------------------------------------------
 # Load rules 
