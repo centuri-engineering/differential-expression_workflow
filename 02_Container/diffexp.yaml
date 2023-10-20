@@ -4,30 +4,30 @@ channels :
     - conda-forge
     - defaults
 dependencies :
-    - r-base =4.0
-    - r-dplyr =1.0.7
-    - r-patchwork =1.1.1
+    - r-base
+    - r-dplyr
+    - r-patchwork
     # Report snakemake
-    - conda-forge::jinja2=2.11.2
-    - conda-forge::networkx=2.5
-    - conda-forge::pygraphviz=1.6
-    - conda-forge::pygments=2.7.2
+    - conda-forge::jinja2
+    - conda-forge::networkx
+    - conda-forge::pygraphviz
+    - conda-forge::pygments
     # For visualizing workflows
-    - graphviz=2.42.3
+    - graphviz=
     - xorg-libxrender
     - xorg-libxpm
-    - conda-forge::r-rmarkdown=2.5
-    - conda-forge::r-tidyverse=1.3.0
+    - conda-forge::r-rmarkdown
+    - conda-forge::r-tidyverse
     # R and statistic packages
     - bioconductor-deseq2 
-    - conda-forge::r-plotly=4.9.2.1
-    - conda-forge::r-htmlwidgets=1.5.2
-    - conda-forge::r-ggplot2=3.3.2
-    - conda-forge::r-pheatmap=1.0.12
+    - conda-forge::r-plotly
+    - conda-forge::r-htmlwidgets
+    - conda-forge::r-ggplot2
+    - conda-forge::r-pheatmap
     #- conda-forge::r-readr=1.3.1
     #- bioconductor-ihw
-    - conda-forge::r-rcolorbrewer=1.1_2
-    - conda-forge::r-dt=0.16
+    - conda-forge::r-rcolorbrewer
+    - conda-forge::r-dt
     - bioconductor-apeglm
     - bioconductor-pcaexplorer
     - bioconductor-enhancedvolcano

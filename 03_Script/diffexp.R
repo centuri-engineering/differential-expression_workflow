@@ -2,6 +2,8 @@
 
 ref_level=snakemake@params[["ref_level"]]
 lfcshrink_type=snakemake@params[["lfcshrink_type"]]
+FCcutoff=snakemake@params[["FCcutoff"]]
+pCutoff=snakemake@params[["pCutoff"]]
 
 ## Ploduce the MA plot and volcanoplot with matrices 
 

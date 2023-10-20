@@ -134,12 +134,12 @@ rule cpm_filtering:
     featureCounts_output = OUTPUTDIR + "06_featurecounts/featurecounts.txt"
 
   output:
+    count_df = report(OUTPUTDIR + "07_cpm/count.txt", caption="../report/count.rst", category="02 Count matrices"),
+    cpm = report(OUTPUTDIR + "07_cpm/cpm_filtered.txt", caption="../report/cpm_filtered.rst", category="02 Count matrices"),
+    output_filter_count = report(OUTPUTDIR + "07_cpm/count_filtered.txt", caption="../report/count_filtered.rst", category="02 Count matrices"),
     cpm_filtering_output = OUTPUTDIR + "07_cpm/cpm_filtering.txt"
 
   params:
-    count_df = report(OUTPUTDIR + "07_cpm/count.txt", caption="../report/count.rst", category="02 Count matrices"),
-    output_filter_count = report(OUTPUTDIR + "07_cpm/count_filtered.txt", caption="../report/count_filtered.rst", category="02 Count matrices"),
-    cpm = report(OUTPUTDIR + "07_cpm/cpm_filtered.txt", caption="../report/cpm_filtered.rst", category="02 Count matrices"),
     thresh_cpm = config["filtering"]["thresh_cpm"],
     thresh_sample = config["filtering"]["thresh_sample"],
     rmrun_list = config["filtering"]["rmrun"],

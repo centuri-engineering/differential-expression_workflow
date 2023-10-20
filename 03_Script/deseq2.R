@@ -16,10 +16,8 @@ if (snakemake@threads > 1) {
 }
 
 # Loading the parameters
-project=snakemake@params[["project"]]
-samples=snakemake@params[["samples"]]
 ref_level=snakemake@params[["ref_level"]]
-normalized_counts_file=snakemake@params[["normalized_counts_file"]]
+normalized_counts_file=snakemake@output[["normalized_counts_file"]]
 
 # Rename column name of the count matrix as coldata
 # colData and countData must have the same sample order
@@ -33,6 +31,7 @@ coldata$condition <- factor(coldata_read$condition)
 coldata$type <- factor(coldata_read$type)
 
 rmproj_list = as.list(strsplit(snakemake@params[["rmproj_list"]], ",")[[1]])
+
 
 if(length(rmproj_list)!=0){
   for (i in 1:length(rmproj_list)) {

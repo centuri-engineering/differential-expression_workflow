@@ -14,6 +14,7 @@ rule deseq2_init:
     cpm_filtering_output = OUTPUTDIR + "07_cpm/cpm_filtering.txt"
 
   output:
+    normalized_counts_file = report(OUTPUTDIR + "08_deseq2_init/normalized_counts.tsv", caption="../report/normalized_counts.rst", category="02 Count matrices"),
     deseq2_init_output = OUTPUTDIR + "08_deseq2_init/deseq2_init.txt"
 
   conda:
@@ -23,9 +24,6 @@ rule deseq2_init:
     cts = OUTPUTDIR + "07_cpm/count_filtered.txt",
     coldata = config["coldata"],
     rds = OUTPUTDIR + "08_deseq2_init/all.rds",
-    normalized_counts_file = report(OUTPUTDIR + "08_deseq2_init/normalized_counts.tsv", caption="../report/normalized_counts.rst", category="02 Count matrices"),
-    project = expand("{samples.project}",samples=samples.itertuples()),
-    samples = expand("{samples.sample}",samples=samples.itertuples()),
     ref_level = config["diffexp"]["ref_level"],
     rmproj_list = config["filtering"]["rmproj"]
 
@@ -39,6 +37,10 @@ rule diffexp:
   input:
     deseq2_init_output = OUTPUTDIR + "08_deseq2_init/deseq2_init.txt"
   output:
+    html_report=report(OUTPUTDIR + "09_differential_expression/diffexp.html", caption="../report/diffexp.rst", category="03 Report differential expression"),
+    all_genes_stats=report(OUTPUTDIR + "09_differential_expression/" + config["diffexp"]["mutant_level"] + "_vs_" + config["diffexp"]["ref_level"] + "_all_genes_stats.tsv", category="03 Report differential expression"),
+    down_regulated=report(OUTPUTDIR + "09_differential_expression/" + config["diffexp"]["mutant_level"] + "_vs_" + config["diffexp"]["ref_level"] + "_signif-down-regulated.txt", category="03 Report differential expression"),
+    up_regulated=report(OUTPUTDIR + "09_differential_expression/" + config["diffexp"]["mutant_level"] + "_vs_" + config["diffexp"]["ref_level"] + "_signif-up-regulated.txt", category="03 Report differential expression"),
     diffexp_output = OUTPUTDIR + "09_differential_expression/diffexp.txt"
   conda:
     CONTAINER + "diffexp.yaml"
@@ -47,7 +49,6 @@ rule diffexp:
     rmd = "03_Script/diffexp.Rmd",
     pca = "03_Script/data_quality.R",
     coldata = config["coldata"],
-    html_report=report(OUTPUTDIR + "09_differential_expression/diffexp.html", caption="../report/diffexp.rst", category="03 Report differential expression"),
     pca_labels=config["pca"]["labels"],
     ref_level = config["diffexp"]["ref_level"],
     lfcshrink_type = config["diffexp"]["lfcshrink_type"],

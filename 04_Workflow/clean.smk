@@ -89,11 +89,11 @@ rule multiqc_trimmed:
     fastqc_trimmed_output= OUTPUTDIR + "03_fastqc/fastqc_trimmed_output.txt"
 
   output:
-    multiqc_trimmed_output = OUTPUTDIR + "03_fastqc/trimmed_multiqc.txt"
+    multiqc_trimmed_output = OUTPUTDIR + "03_fastqc/trimmed_multiqc.txt",
+    trim_multi_html = report(OUTPUTDIR + "03_fastqc/trimmed_multiqc.html", caption = ROOTDIR + "/report/multiqc.rst", category="01 quality report")
 
   params:
     trim_qc = expand( "05_Output/03_fastqc/{samples}.{run}.trimmed_fastqc.zip", samples=SAMPLES, run=RUN),
-    trim_multi_html = report(OUTPUTDIR + "03_fastqc/trimmed_multiqc.html", caption = ROOTDIR + "/report/multiqc.rst", category="01 quality report"), 
     multiqc_output_trim = OUTPUTDIR + "03_fastqc/trimmed_multiqc_data"
 
   conda:
@@ -101,7 +101,7 @@ rule multiqc_trimmed:
 
   shell: 
     """
-    multiqc -n {params.trim_multi_html} {params.trim_qc} --force #run multiqc
+    multiqc -n {output.trim_multi_html} {params.trim_qc} --force #run multiqc
     rm -rf {params.multiqc_output_trim} #clean-up
     touch {output.multiqc_trimmed_output}
     """
