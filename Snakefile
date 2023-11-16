@@ -59,7 +59,8 @@ rule all:
     featureCounts_output = OUTPUTDIR + "06_featurecounts/featurecounts.txt",
     cpm_filtering_output = OUTPUTDIR + "07_cpm/cpm_filtering.txt",
     deseq2_init_output = OUTPUTDIR + "08_deseq2_init/deseq2_init.txt",
-    diffexp_output = OUTPUTDIR + "09_differential_expression/diffexp.txt"
+    diffexp_output = OUTPUTDIR + "09_differential_expression/diffexp.txt",
+    intersection_output = OUTPUTDIR + "10_intersection/intersection.txt"
 
 # ----------------------------------------------
 # setup singularity 
@@ -88,3 +89,4 @@ report: "report/workflow.rst"
 include: ENVDIR + "clean.smk"
 include: ENVDIR + "count.smk"
 include: ENVDIR + "diffexp.smk"
+include: ENVDIR + "intersection.smk"

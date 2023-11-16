@@ -43,7 +43,7 @@ Configure the workflow according to your needs via editing the files and reposit
 
 - Then execute the workflow locally via
 
-`snakemake  --use-conda --use-singularity --cores 10`
+`snakemake  --use-conda --use-singularity --cores 12`
 
 ### Step 4: Investigate results 
 

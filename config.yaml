@@ -44,13 +44,13 @@ pca:
 
 diffexp:
     # Reference to do the comparison
-    ref_level: "Dorsalized"
+    ref_level: "Dorsalized_torso"
     # Shrinkage estimator for ranking and visualization (apeglm, normal or ashr)
     lfcshrink_type: "apeglm"
     # Gene name to see the expression between the condition (can be a list of genes)
     gene_name: "Dmel_CG8095,Dmel_CG1046,Dmel_CG9885,Dmel_CG1378,Dmel_CG9768,Dmel_CG9559,Dmel_CG2956,Dmel_CG3956"
     # Mutant to represent the gene with the top p-value
-    mutant_level: "Dorsalized_torso"
+    mutant_level: "Dorsalized"
     # Number of genes to select with the best p-value
     nbpval: 50
     # qvalue threshold
@@ -58,4 +58,12 @@ diffexp:
     # Foldchange threshold
     FCcutoff: 2
 
-    
+# If you want to compare common differential expressed genes between 2 comparisons.
+# The comparisons between two conditions need to be done in two different workflow 
+# to generate the up/down-regulated file during the 09_differential_expression step.
+# First column need to be the gene name
+intersection:
+    gene_list_1: "Ventralized_vs_Dorsalized_signif-down-regulated.txt"
+    gene_list_2: "Dorsalized_vs_Dorsalized_torso_signif-up-regulated.txt"
+    stat_file_1: "Ventralized_torso_vs_Ventralized_all_genes_stats.tsv"
+    stat_file_2: "Dorsalized_torso_vs_Ventralized_torso_all_genes_stats.tsv"
