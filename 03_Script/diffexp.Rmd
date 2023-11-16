@@ -1,6 +1,6 @@
 ---
-title: "Level of expression of Actin and Acting Binding Proteins in Saccharomyces cerevisiae cells"
-subtitle: "Bioinformatics project | IBDM | Micaela Boiero Sanders"
+title: "Endoderm DV polarity during Drosophila gastrulation."
+subtitle: "Bioinformatics project | IBDM | Shruti Pothapragada"
 author:
 - Thomas Vannier | CENTURI Multi-Engineering Platform
 date: "`r format(Sys.time(), '%d %B %Y')`"

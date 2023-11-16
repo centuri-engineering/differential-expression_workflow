@@ -2,6 +2,8 @@
 
 ref_level=snakemake@params[["ref_level"]]
 lfcshrink_type=snakemake@params[["lfcshrink_type"]]
+FCcutoff=snakemake@params[["FCcutoff"]]
+pCutoff=snakemake@params[["pCutoff"]]
 
 ## Ploduce the MA plot and volcanoplot with matrices 
 
@@ -153,7 +155,7 @@ topnorm_length=length(topnorm)
 gathered_topnorm <- topnorm %>% gather(colnames(topnorm)[2:topnorm_length], key = "samplename", value = "normalized_counts")
 
 # Counts colored by sample group
-coldata_read <- read.delim(paste("../",snakemake@input[["coldata"]],sep=""), header=TRUE, comment.char="#", quote="")
+coldata_read <- read.delim(paste("../",snakemake@params[["coldata"]],sep=""), header=TRUE, comment.char="#", quote="")
 coldata <- coldata_read[,-3]
 names(coldata)[names(coldata) == "project"] <- "samplename"
 gathered_topnorm <- inner_join(coldata, gathered_topnorm)
@@ -172,3 +174,7 @@ p=ggplot(gathered_topnorm) +
 	theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
 	theme(plot.title = element_text(hjust = 0.5))
 ggplotly(p)
+
+# File to complete the snakemake rule
+diffexp_output=snakemake@output[["diffexp_output"]]
+writeLines(c("diffexp step done"), diffexp_output)

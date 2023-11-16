@@ -16,15 +16,13 @@ if (snakemake@threads > 1) {
 }
 
 # Loading the parameters
-project=snakemake@params[["project"]]
-samples=snakemake@params[["samples"]]
 ref_level=snakemake@params[["ref_level"]]
 normalized_counts_file=snakemake@output[["normalized_counts_file"]]
 
 # Rename column name of the count matrix as coldata
 # colData and countData must have the same sample order
-cts <- as.matrix(read.table(snakemake@input[["cts"]], header=T, row.names = 1))
-coldata_read <- read.delim(snakemake@input[["coldata"]], header=TRUE, comment.char="#", quote="")
+cts <- as.matrix(read.table(snakemake@params[["cts"]], header=T, row.names = 1))
+coldata_read <- read.delim(snakemake@params[["coldata"]], header=TRUE, comment.char="#", quote="")
 colnames(cts) <- coldata_read[,1]
 
 coldata <- coldata_read[,-1]
@@ -33,6 +31,7 @@ coldata$condition <- factor(coldata_read$condition)
 coldata$type <- factor(coldata_read$type)
 
 rmproj_list = as.list(strsplit(snakemake@params[["rmproj_list"]], ",")[[1]])
+
 
 if(length(rmproj_list)!=0){
   for (i in 1:length(rmproj_list)) {
@@ -61,7 +60,7 @@ dds$condition <- relevel(dds$condition, ref = ref_level)
 # determined by median ratio of gene counts relative to geometric mean per gene)
 dds <- DESeq(dds, parallel=parallel)
 # To save the object in a file for later use
-saveRDS(dds, file=snakemake@output[["rds"]])
+saveRDS(dds, file=snakemake@params[["rds"]])
 
 # Already done in the DESeq function
 dds <- estimateSizeFactors( dds)
@@ -69,3 +68,7 @@ print(sizeFactors(dds))
 # Save the normalized data matrix
 normalized_counts <- counts(dds, normalized=TRUE)
 write.table(normalized_counts, file=normalized_counts_file, sep="\t", quote=F, col.names=NA)
+
+# File to complete the snakemake rule
+deseq2_init_output=snakemake@output[["deseq2_init_output"]]
+writeLines(c("deseq2_init step done"), deseq2_init_output)

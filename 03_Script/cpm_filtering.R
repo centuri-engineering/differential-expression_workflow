@@ -23,7 +23,7 @@ rmrun_list = as.list(strsplit(snakemake@params[["rmrun_list"]], ",")[[1]])
 if(length(rmrun_list)!=0){
   for (i in 1:length(rmrun_list)) {
       name <- rmrun_list[[i]]
-      rmrun_file <- as.numeric(grep(pattern = name, file_list))
+      rmrun_file <- as.numeric(grep(pattern = paste(name,"_count.txt$", sep=""), file_list))
       file_list <- file_list[-rmrun_file]
   }
 }
@@ -46,11 +46,11 @@ cpm <- cpm(mtx_total_count)
 df_cpm <- as.data.frame(cpm)
 df_cpm <- cbind(Gene_id=dataframe_total_count[-1,1], df_cpm)
 
-## Remove row with n value < cpm
 df_cpm[] <- lapply(df_cpm, function(x) {
     if(is.factor(x)) as.numeric(as.character(x)) else x
 })
-# Dataframe with the cpm filtrated
+# Dataframe with the cpm filtrated : It keep the genes with cpm value >= x in at least n samples
+# if n = 3 in a replicate keep the gene even if one experiment have 0 in each replicate
 df_cpm_filter <- data.frame()
 for (j in 1:nrow(df_cpm)) {
     flag = 0
@@ -80,4 +80,6 @@ for (i in 1:nrow(df_cpm_filter)) {
 # Matrix transformation for cpm calculation
 write.table(dataframe_filtered_count, file = output_filter_count, quote = FALSE, row.names = FALSE, col.names = FALSE)
 
-
+# Writing on the snakemake outputfile
+cpm_filtering_output=snakemake@output[["cpm_filtering_output"]]
+writeLines(c("cpm filtering step done"), cpm_filtering_output)

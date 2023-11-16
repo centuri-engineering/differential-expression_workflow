@@ -5,31 +5,36 @@ condition: condition.tsv
 
 run:
     # Can be a list if pair-end : "R1,R2" or "1,2"
-    type: "1"
+    type: "R1,R2"
     # paired or unpaired fastq file
-    reads: "unpaired"
+    reads: "paired"
     # Extension for the input fastq file
     ext: "fastq.gz"
 
+clean:
+    # File to remove adapters with trimmomatic
+    illuminaclip: "01_Reference/NexteraPE-PE.fa"
+
 ref:
     # Reference Genome (must be unziped)
-    genome: "GCF_000146045.2_R64_genomic.fna"
+    genome: "GCF_000001215.4_Release_6_plus_ISO1_MT_genomic.fna"
     # The Hisat index
-    index: "04_index/R64"
+    index: "04_index/drosophila"
     # gtf file with transcripts
-    annotation: "GCF_000146045.2_R64_genomic.gtf"
+    annotation: "GCF_000001215.4_Release_6_plus_ISO1_MT_genomic.gtf"
     # Gene id for the figures
     geneid: "gene_id"
 
 filtering:
     # Run to remove from the bulk RNA-seq analyse after fastqc introspection (separated by ,) in the cpm_filtering.R script. Can be ""
-    #rmrun: "P2598_Ca-1_PVHD16,P2598_Ca-2_PVHD17,P2598_Ca-3_PVHD18,P2598_ScNI-1_PVHD1,P2598_ScNI-2_PVHD2,P2598_ScNI-3_PVHD3,P2598_Sc_At-1_PVHD10,P2598_Sc_At-2_PVHD11,P2598_Sc_At-3_PVHD12,P2598_Sc_Sp-1_PVHD7,P2598_Sc_Sp-2_PVHD8,P2598_Sc_Sp-3_PVHD9"
     rmrun: ""
-    #rmproj: "Ca-1,Ca-2,Ca-3,ScNI-1,ScNI-2,ScNI-3,Sc_At-1,Sc_At-2,Sc_At-3,Sc_Sp-1,Sc_Sp-2,Sc_Sp-3"
+    # rmrun: "DKVD7,DKVD8,DKVD9,DKVD10,DKVD11,DKVD12"
     rmproj: ""
+    # rmproj: "Ventralized_replicate_1,Ventralized_replicate_2,Ventralized_replicate_3,Ventralized_torso_replicate_1,Ventralized_torso_replicate_2,Ventralized_torso_replicate_3"
     # cpm threshold to filter the low expressed genes
     thresh_cpm: 1
     # Minimum number of samples to have a high expressed genes (depending of the cpm threshold)
+    # Take the number of replicat to keep genes with genes only present in one of the condition 
     thresh_sample: 3
 
 pca:
@@ -39,18 +44,26 @@ pca:
 
 diffexp:
     # Reference to do the comparison
-    ref_level: "ScNI"
+    ref_level: "Dorsalized_torso"
     # Shrinkage estimator for ranking and visualization (apeglm, normal or ashr)
     lfcshrink_type: "apeglm"
     # Gene name to see the expression between the condition (can be a list of genes)
-    gene_name: "YOR122C,YLL050C,YOR181W,YDL029W,YJR065C,YKL007W,YIL034C,YNL079C,YIL138C,YNL271C,YIL159W,YDR129C,YMR092C,YGR080W,YNL138W,YLR429W,YIL062C,YLR370C,YKL013C,YNR035C,YBR234C,YCR088W,YHR023W,YKL129C,YMR109W,YIR006C,YDR063W,YLR319C,YPL242C,YOR239W,YOR326W,YAL029C,YFL039C,Sc[Ca],Sc[Sp],Sc[At],N2,Ca"
+    gene_name: "Dmel_CG8095,Dmel_CG1046,Dmel_CG9885,Dmel_CG1378,Dmel_CG9768,Dmel_CG9559,Dmel_CG2956,Dmel_CG3956"
     # Mutant to represent the gene with the top p-value
-    mutant_level: "Sc_Ca"
+    mutant_level: "Dorsalized"
     # Number of genes to select with the best p-value
     nbpval: 50
     # qvalue threshold
     pCutoff: 0.01
     # Foldchange threshold
-    FCcutoff: 1.5
+    FCcutoff: 2
 
-    
+# If you want to compare common differential expressed genes between 2 comparisons.
+# The comparisons between two conditions need to be done in two different workflow 
+# to generate the up/down-regulated file during the 09_differential_expression step.
+# First column need to be the gene name
+intersection:
+    gene_list_1: "Ventralized_vs_Dorsalized_signif-down-regulated.txt"
+    gene_list_2: "Dorsalized_vs_Dorsalized_torso_signif-up-regulated.txt"
+    stat_file_1: "Ventralized_torso_vs_Ventralized_all_genes_stats.tsv"
+    stat_file_2: "Dorsalized_torso_vs_Ventralized_torso_all_genes_stats.tsv"
